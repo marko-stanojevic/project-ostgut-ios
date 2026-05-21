@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EA62FBFB3120060419F /* SinkPlayback */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B0920E622FBFB08A0060419F /* Sink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = Sink;
 			packageProductDependencies = (
+				B0920EA62FBFB3120060419F /* SinkPlayback */,
 			);
 			productName = Sink;
 			productReference = B0920E622FBFB08A0060419F /* Sink.app */;
@@ -94,6 +100,10 @@
 			);
 			mainGroup = B0920E592FBFB08A0060419F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B0920EA42FBFB2F10060419F /* XCLocalSwiftPackageReference "SinkAPI" */,
+				B0920EA52FBFB3120060419F /* XCLocalSwiftPackageReference "SinkPlayback" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B0920E632FBFB08A0060419F /* Products */;
 			projectDirPath = "";
@@ -345,6 +355,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B0920EA42FBFB2F10060419F /* XCLocalSwiftPackageReference "SinkAPI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SinkAPI;
+		};
+		B0920EA52FBFB3120060419F /* XCLocalSwiftPackageReference "SinkPlayback" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SinkPlayback;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B0920EA62FBFB3120060419F /* SinkPlayback */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkPlayback;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B0920E5A2FBFB08A0060419F /* Project object */;
 }

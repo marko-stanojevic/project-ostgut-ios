@@ -1,0 +1,33 @@
+name: PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test-lint:
+    name: Build, Test, Lint
+    runs-on: [self-hosted, macos]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build for testing
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -scheme Sink \
+            -destination "platform=iOS Simulator,name=iPhone 16" \
+            | xcpretty
+
+      - name: Test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme Sink \
+            -destination "platform=iOS Simulator,name=iPhone 16" \
+            | xcpretty
+
+      - name: Lint
+        run: swiftlint --strict
