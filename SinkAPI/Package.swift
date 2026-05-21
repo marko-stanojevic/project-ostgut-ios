@@ -2,10 +2,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "SinkFMAPI",
+    name: "SinkAPI",
     platforms: [.iOS(.v17)],
     products: [
-        .library(name: "SinkFMAPI", targets: ["SinkFMAPI"]),
+        .library(name: "SinkAPI", targets: ["SinkAPI"]),
     ],
     dependencies: [
         .package(
@@ -23,7 +23,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "SinkFMAPI",
+            name: "SinkAPI",
             dependencies: [
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
@@ -33,8 +33,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "SinkFMAPITests",
-            dependencies: ["SinkFMAPI"]
+            name: "SinkAPITests",
+            dependencies: ["SinkAPI"]
         ),
     ]
 )

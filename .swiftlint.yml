@@ -1,12 +1,12 @@
 included:
-  - SinkFM
-  - SinkFMAPI/Sources
-  - SinkFMPlayback/Sources
+  - Sink
+  - SinkAPI/Sources
+  - SinkPlayback/Sources
 
 excluded:
-  - SinkFM/.build
-  - SinkFMAPI/.build
-  - SinkFMPlayback/.build
+  - Sink/.build
+  - SinkAPI/.build
+  - SinkPlayback/.build
   - DerivedData
 
 disabled_rules:

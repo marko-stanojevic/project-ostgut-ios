@@ -2,19 +2,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "SinkFMPlayback",
+    name: "SinkPlayback",
     platforms: [.iOS(.v17)],
     products: [
-        .library(name: "SinkFMPlayback", targets: ["SinkFMPlayback"]),
+        .library(name: "SinkPlayback", targets: ["SinkPlayback"]),
     ],
     targets: [
         .target(
-            name: "SinkFMPlayback",
+            name: "SinkPlayback",
             dependencies: []
         ),
         .testTarget(
-            name: "SinkFMPlaybackTests",
-            dependencies: ["SinkFMPlayback"]
+            name: "SinkPlaybackTests",
+            dependencies: ["SinkPlayback"]
         ),
     ]
 )
