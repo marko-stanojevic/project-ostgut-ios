@@ -1,0 +1,3 @@
+// Debug configuration overrides.
+// Set API_BASE_URL to your local backend.
+API_BASE_URL = http://localhost:8080
