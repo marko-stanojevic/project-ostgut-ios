@@ -1,24 +1,19 @@
-//
-//  ContentView.swift
-//  Sink
-//
-//  Created by Marko Stanojevic on 21. 5. 2026..
-//
-
 import SwiftUI
 
+/// Placeholder root content — replaced by the catalog and player in ios-8/ios-9.
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+    @Environment(AuthViewModel.self) private var viewModel
 
-#Preview {
-    ContentView()
+    var body: some View {
+        VStack(spacing: 24) {
+            Text("SINK")
+                .font(.system(size: 40, weight: .black))
+                .tracking(8)
+            Text("You're signed in.")
+                .foregroundStyle(.secondary)
+            Button("Sign Out", role: .destructive) {
+                Task { await viewModel.logout() }
+            }
+        }
+    }
 }

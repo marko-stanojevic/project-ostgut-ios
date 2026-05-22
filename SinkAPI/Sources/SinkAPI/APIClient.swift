@@ -18,11 +18,13 @@ import OpenAPIURLSession
 /// ```
 public final class APIClient: Sendable {
     public let client: Client
+    public let serverURL: URL
 
     public init(
         serverURL: URL,
         tokenProvider: @escaping @Sendable () async throws -> String
     ) {
+        self.serverURL = serverURL
         client = Client(
             serverURL: serverURL,
             transport: URLSessionTransport(),
