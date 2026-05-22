@@ -55,11 +55,13 @@ jobs:
           git commit -m "chore(spec): sync openapi.yaml from backend ${short_sha}"
           git push origin "$branch"
 
-          gh pr create \
-            --title "chore(spec): sync openapi.yaml from backend ${short_sha}" \
-            --body "Automated spec update from backend commit \`${SHA}\`.
+          pr_body="Automated spec update from backend commit ${SHA}.
 
 Review the diff to confirm new or changed endpoints are expected.
-Merge to regenerate the \`SinkAPI\` client — breaking changes will surface as compile errors on the next build." \
+Merge to regenerate the SinkAPI client — breaking changes will surface as compile errors on the next build."
+
+          gh pr create \
+            --title "chore(spec): sync openapi.yaml from backend ${short_sha}" \
+            --body "$pr_body" \
             --base main \
             --head "$branch"
