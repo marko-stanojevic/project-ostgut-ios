@@ -1,3 +1,4 @@
+import Observation
 import SinkAPI
 import SinkPlayback
 #if os(iOS)

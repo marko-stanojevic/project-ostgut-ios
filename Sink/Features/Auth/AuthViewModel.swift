@@ -1,5 +1,6 @@
 import AuthenticationServices
 import Foundation
+import Observation
 import SinkAPI
 
 /// View model shared by LoginView and SignUpView.
