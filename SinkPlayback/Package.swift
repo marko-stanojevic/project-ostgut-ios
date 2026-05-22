@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "SinkPlayback",
-    platforms: [.iOS(.v17), .macOS(.v10_15)],
+    platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
         .library(name: "SinkPlayback", targets: ["SinkPlayback"]),
     ],
