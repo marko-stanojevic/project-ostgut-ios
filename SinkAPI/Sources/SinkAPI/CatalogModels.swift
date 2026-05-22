@@ -134,6 +134,16 @@ public struct CatalogPlayback: Sendable {
     }
 }
 
+public struct NowPlayingResult: Sendable {
+    public let title: String
+    public let artist: String
+
+    public init(title: String, artist: String) {
+        self.title = title
+        self.artist = artist
+    }
+}
+
 public struct AnonymousSessionToken: Sendable {
     public let token: String
     public let expiresAt: Date
@@ -261,6 +271,17 @@ struct CatalogPlaybackJSON: Decodable {
             throw CatalogAPIError.invalidResponse("unparseable expires_at")
         }
         return CatalogPlayback(url: url, expiresAt: date)
+    }
+}
+
+struct NowPlayingJSON: Decodable {
+    let title: String
+    let artist: String
+    let supported: Bool
+
+    func toModel() -> NowPlayingResult? {
+        guard supported else { return nil }
+        return NowPlayingResult(title: title, artist: artist)
     }
 }
 

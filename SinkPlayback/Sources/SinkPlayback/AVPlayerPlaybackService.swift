@@ -6,19 +6,25 @@ import MediaPlayer
 public final class AVPlayerPlaybackService: PlaybackService {
     public private(set) var state: PlaybackState = .idle
 
+    public private(set) var nowPlayingMetadata: NowPlayingMetadata?
+
     // Internal visibility allows the test target to inspect player state.
     let player: AVPlayer
     private let playbackURLResolver: @Sendable (String) async throws -> PlaybackToken
+    private let nowPlayingResolver: (@Sendable (String) async throws -> NowPlayingMetadata?)?
     private var reResolveTask: Task<Void, Never>?
+    private var pollTask: Task<Void, Never>?
     // Stored so the observer can be removed in deinit, preventing stale observers in tests.
     nonisolated(unsafe) private var interruptionObserver: (any NSObjectProtocol)?
 
     public init(
         playbackURLResolver: @escaping @Sendable (String) async throws -> PlaybackToken,
+        nowPlayingResolver: (@Sendable (String) async throws -> NowPlayingMetadata?)? = nil,
         player: AVPlayer = AVPlayer()
     ) {
         self.player = player
         self.playbackURLResolver = playbackURLResolver
+        self.nowPlayingResolver = nowPlayingResolver
         setupRemoteCommands()
         setupInterruptionHandling()
     }
@@ -46,23 +52,28 @@ public final class AVPlayerPlaybackService: PlaybackService {
         state = .playing(station: station)
         updateNowPlaying(station: station)
         scheduleReResolve(station: station, expiresAt: token.expiresAt)
+        startPolling(station: station)
     }
 
     public func pause() {
         guard case .playing(let station) = state else { return }
         player.pause()
         state = .paused(station: station)
+        stopPolling()
     }
 
     public func resume() {
         guard case .paused(let station) = state else { return }
         player.play()
         state = .playing(station: station)
+        startPolling(station: station)
     }
 
     public func stop() {
         reResolveTask?.cancel()
         reResolveTask = nil
+        stopPolling()
+        nowPlayingMetadata = nil
         player.replaceCurrentItem(with: nil)
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
@@ -127,11 +138,44 @@ public final class AVPlayerPlaybackService: PlaybackService {
         }
     }
 
+    private func startPolling(station: Station) {
+        pollTask?.cancel()
+        guard let resolver = nowPlayingResolver else { return }
+        pollTask = Task { [weak self] in
+            while !Task.isCancelled {
+                if let self {
+                    let metadata = try? await resolver(station.id)
+                    self.nowPlayingMetadata = metadata
+                    self.updateNowPlayingLockScreen(station: station, metadata: metadata)
+                }
+                try? await Task.sleep(for: .seconds(20))
+            }
+        }
+    }
+
+    private func stopPolling() {
+        pollTask?.cancel()
+        pollTask = nil
+    }
+
     private func updateNowPlaying(station: Station) {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
             MPMediaItemPropertyTitle: station.name,
             MPNowPlayingInfoPropertyIsLiveStream: true
         ]
+    }
+
+    private func updateNowPlayingLockScreen(station: Station, metadata: NowPlayingMetadata?) {
+        var info: [String: Any] = [MPNowPlayingInfoPropertyIsLiveStream: true]
+        if let metadata, !metadata.title.isEmpty {
+            info[MPMediaItemPropertyTitle] = metadata.title
+            if !metadata.artist.isEmpty {
+                info[MPMediaItemPropertyArtist] = metadata.artist
+            }
+        } else {
+            info[MPMediaItemPropertyTitle] = station.name
+        }
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
 
     private func scheduleReResolve(station: Station, expiresAt: Date) {

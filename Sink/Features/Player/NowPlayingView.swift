@@ -67,10 +67,22 @@ struct NowPlayingView: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
             }
-            // Track and artist metadata — wired in ios-11
-            Text("Live")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            if let meta = service.nowPlayingMetadata, !meta.title.isEmpty {
+                Text(meta.title)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.center)
+                if !meta.artist.isEmpty {
+                    Text(meta.artist)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            } else {
+                Text("Live")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

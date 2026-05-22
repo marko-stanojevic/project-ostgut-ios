@@ -43,10 +43,16 @@ struct SinkApp: App {
             apiClient: apiClient,
             anonymousSessionStore: anonymousSessionStore
         )
-        self.playbackService = AVPlayerPlaybackService { id in
-            let result = try await apiClient.fetchPlayback(id: id)
-            return PlaybackToken(url: result.url, expiresAt: result.expiresAt)
-        }
+        self.playbackService = AVPlayerPlaybackService(
+            playbackURLResolver: { id in
+                let result = try await apiClient.fetchPlayback(id: id)
+                return PlaybackToken(url: result.url, expiresAt: result.expiresAt)
+            },
+            nowPlayingResolver: { id in
+                guard let result = try await apiClient.fetchNowPlaying(id: id) else { return nil }
+                return NowPlayingMetadata(title: result.title, artist: result.artist)
+            }
+        )
 
         Task { await Self.restoreAuthState(tokenStore: tokenStore, navigation: navigation) }
     }

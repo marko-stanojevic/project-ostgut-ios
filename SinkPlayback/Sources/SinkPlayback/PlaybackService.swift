@@ -47,6 +47,7 @@ public extension PlaybackState {
 @MainActor
 public protocol PlaybackService: AnyObject {
     var state: PlaybackState { get }
+    var nowPlayingMetadata: NowPlayingMetadata? { get }
 
     /// Resolve a signed playback URL and start streaming the station.
     func play(station: Station) async throws
