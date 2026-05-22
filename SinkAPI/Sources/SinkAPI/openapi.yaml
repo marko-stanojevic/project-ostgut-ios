@@ -46,6 +46,8 @@ components:
       - turnstile_verification_failed
       - password_reset_required
       - oauth_account_email_change_unsupported
+      - oauth_reauth_required
+      - oauth_reauth_provider_not_linked
       - cannot_revoke_current_session
       type: string
       x-enum-varnames:
@@ -93,6 +95,8 @@ components:
       - CodeTurnstileVerificationFailed
       - CodePasswordResetRequired
       - CodeOAuthAccountEmailChangeUnsupported
+      - CodeOAuthReauthRequired
+      - CodeOAuthReauthProviderNotLinked
       - CodeCannotRevokeCurrentSession
     github_com_marko-stanojevic_project-ostgut_backend_internal_apierror.Response:
       properties:
@@ -1476,6 +1480,13 @@ components:
         title:
           type: string
       type: object
+    github_com_marko-stanojevic_project-ostgut_backend_internal_handler_responses.OAuthEmailChangeReauth:
+      properties:
+        reauth_token:
+          type: string
+      required:
+      - reauth_token
+      type: object
     github_com_marko-stanojevic_project-ostgut_backend_internal_handler_responses.OAuthLink:
       properties:
         email_mismatch:
@@ -2497,6 +2508,26 @@ components:
       required:
       - mfa_challenge_token
       type: object
+    internal_handler.oauthEmailChangeReauthRequest:
+      properties:
+        email:
+          type: string
+        email_verified:
+          type: boolean
+        provider:
+          type: string
+        provider_id:
+          type: string
+        signature:
+          type: string
+        timestamp:
+          type: integer
+      required:
+      - provider
+      - provider_id
+      - signature
+      - timestamp
+      type: object
     internal_handler.oauthLinkInitiateRequest:
       properties:
         provider:
@@ -2632,8 +2663,9 @@ components:
           type: string
         new_email:
           type: string
+        oauth_reauth_token:
+          type: string
       required:
-      - current_password
       - new_email
       type: object
     internal_handler.resetPasswordRequest:
@@ -2754,6 +2786,7 @@ paths:
   /health:
     get:
       description: Checks API and database reachability for platform probes and monitoring.
+      operationId: getHealth
       responses:
         "200":
           content:
@@ -2774,6 +2807,7 @@ paths:
     get:
       description: Returns the generated OpenAPI 3.0 JSON document for the backend
         API.
+      operationId: getOpenapiJson
       responses:
         "200":
           content:
@@ -2790,6 +2824,7 @@ paths:
       description: Returns the generated OpenAPI 3.0 YAML document for the backend
         API. Used by Swift OpenAPI Generator and other tooling that requires YAML
         input.
+      operationId: getOpenapiYaml
       responses:
         "200":
           content:
@@ -2803,6 +2838,7 @@ paths:
   /ping:
     get:
       description: Returns a lightweight reachability response without checking dependencies.
+      operationId: getPing
       responses:
         "200":
           content:
@@ -2817,6 +2853,7 @@ paths:
     get:
       description: Returns the generated Swagger 2.0 JSON document for the Swagger
         UI and legacy tooling.
+      operationId: getSwaggerJson
       responses:
         "200":
           content:
@@ -2831,6 +2868,7 @@ paths:
   /v1/admin/audit-events:
     get:
       description: Returns privileged audit events with optional action filtering.
+      operationId: getV1AdminAuditEvents
       parameters:
       - description: Page size
         in: query
@@ -2881,6 +2919,7 @@ paths:
     get:
       description: Returns editable catalog entries with moderation, stream, and media
         details for editor and admin workspaces.
+      operationId: getV1AdminCatalog
       parameters:
       - description: Filter by status (pending, published)
         in: query
@@ -2935,6 +2974,7 @@ paths:
     post:
       description: Creates an editable catalog entry with its initial stream set for
         editor and admin workspaces.
+      operationId: postV1AdminCatalog
       requestBody:
         content:
           application/json:
@@ -2995,6 +3035,7 @@ paths:
     delete:
       description: Deletes an editable catalog entry after confirm-slug verification.
         Admin role is required.
+      operationId: deleteV1AdminCatalogById
       parameters:
       - description: Catalog entry id
         in: path
@@ -3057,6 +3098,7 @@ paths:
     get:
       description: Returns an editable catalog entry with streams, media, and selection
         preview for editor and admin workspaces.
+      operationId: getV1AdminCatalogById
       parameters:
       - description: Catalog entry id or slug
         in: path
@@ -3108,6 +3150,7 @@ paths:
     put:
       description: Updates editable catalog entry fields and optional stream configuration
         for editor and admin workspaces.
+      operationId: putV1AdminCatalogById
       parameters:
       - description: Catalog entry id
         in: path
@@ -3181,6 +3224,7 @@ paths:
     post:
       description: Runs one or more catalog maintenance domains for one station stream
         and returns per-domain results.
+      operationId: postV1AdminCatalogByIdStreamsByStreamIDProbe
       parameters:
       - description: Catalog entry id
         in: path
@@ -3247,6 +3291,7 @@ paths:
     post:
       description: Bulk updates catalog entry publish status for editor and admin
         workspaces.
+      operationId: postV1AdminCatalogBulk
       requestBody:
         content:
           application/json:
@@ -3313,6 +3358,7 @@ paths:
     get:
       description: Returns runtime process health, request-surface configuration,
         and instrumentation state.
+      operationId: getV1AdminDiagnosticsApi
       responses:
         "200":
           content:
@@ -3347,6 +3393,7 @@ paths:
     get:
       description: Returns PostgreSQL reachability, migration state, and connection-pool
         pressure.
+      operationId: getV1AdminDiagnosticsDatabase
       responses:
         "200":
           content:
@@ -3381,6 +3428,7 @@ paths:
     get:
       description: Returns background worker cadence, freshness, and available job
         actions.
+      operationId: getV1AdminDiagnosticsJobs
       responses:
         "200":
           content:
@@ -3414,6 +3462,7 @@ paths:
   /v1/admin/diagnostics/media:
     get:
       description: Returns media asset processing, storage, and hash coverage diagnostics.
+      operationId: getV1AdminDiagnosticsMedia
       responses:
         "200":
           content:
@@ -3447,6 +3496,7 @@ paths:
   /v1/admin/editorial-exports:
     post:
       description: Creates an editorial export job and starts the async export worker.
+      operationId: postV1AdminEditorialExports
       responses:
         "202":
           content:
@@ -3468,6 +3518,7 @@ paths:
   /v1/admin/editorial-exports/{id}/download:
     get:
       description: Streams the manifest bytes for a ready editorial export job.
+      operationId: getV1AdminEditorialExportsByIdDownload
       parameters:
       - description: Job id
         in: path
@@ -3509,6 +3560,7 @@ paths:
   /v1/admin/editorial-exports/jobs/{id}:
     get:
       description: Returns the current state of an editorial export job.
+      operationId: getV1AdminEditorialExportsJobsById
       parameters:
       - description: Job id
         in: path
@@ -3543,6 +3595,7 @@ paths:
   /v1/admin/jobs/{jobID}/trigger:
     post:
       description: Starts a triggerable background job when it is not already running.
+      operationId: postV1AdminJobsByJobIDTrigger
       parameters:
       - description: Job id
         in: path
@@ -3596,6 +3649,7 @@ paths:
     post:
       description: Reclaims stale catalog-maintenance locks and removes terminal retry
         rows.
+      operationId: postV1AdminJobsCatalogCoverageRepair
       responses:
         "200":
           content:
@@ -3629,6 +3683,7 @@ paths:
   /v1/admin/overview:
     get:
       description: Returns admin system status checks and metric groups.
+      operationId: getV1AdminOverview
       responses:
         "200":
           content:
@@ -3662,6 +3717,7 @@ paths:
   /v1/admin/stats:
     get:
       description: Returns station counts by moderation status.
+      operationId: getV1AdminStats
       responses:
         "200":
           content:
@@ -3695,6 +3751,7 @@ paths:
   /v1/admin/subscription-plans:
     get:
       description: Returns configurable subscription plans and known feature keys.
+      operationId: getV1AdminSubscriptionPlans
       responses:
         "200":
           content:
@@ -3728,6 +3785,7 @@ paths:
   /v1/admin/subscription-plans/{id}:
     put:
       description: Creates or updates a configurable subscription plan.
+      operationId: putV1AdminSubscriptionPlansById
       parameters:
       - description: Plan id
         in: path
@@ -3789,6 +3847,7 @@ paths:
     get:
       description: Returns users and resolved subscription capabilities for admin
         management.
+      operationId: getV1AdminUsers
       parameters:
       - description: Page size
         in: query
@@ -3839,6 +3898,7 @@ paths:
     put:
       description: Updates a user's role and revokes their active backend auth state.
         Requires sudo re-authentication.
+      operationId: putV1AdminUsersByIdRole
       parameters:
       - description: User id
         in: path
@@ -3900,6 +3960,7 @@ paths:
     put:
       description: Updates a user's subscription plan and status, then revokes active
         backend auth state.
+      operationId: putV1AdminUsersByIdSubscription
       parameters:
       - description: User id
         in: path
@@ -3968,6 +4029,7 @@ paths:
       description: Issues a 30-minute sliding anonymous session for pre-login catalog
         browsing, capped at 6 hours. Send the returned token as X-Anonymous-Session
         on browse endpoints.
+      operationId: postV1AnonymousSessions
       parameters:
       - description: Existing anonymous session token
         in: header
@@ -4006,6 +4068,7 @@ paths:
       description: Extends an anonymous session for another 6-hour window after completing
         Turnstile verification. Requires the session to have reached its hard cap
         and not have been previously extended.
+      operationId: putV1AnonymousSessions
       parameters:
       - description: Anonymous session token
         in: header
@@ -4060,6 +4123,7 @@ paths:
       description: Consumes a cancel token mailed to the current verified address,
         clears any pending email change, revokes all sessions and arms a forced password
         reset.
+      operationId: postV1AuthEmailChangeCancel
       requestBody:
         content:
           application/json:
@@ -4097,6 +4161,7 @@ paths:
       description: Consumes the confirm token mailed to the new address, swaps the
         user's email, preserves the originating session, revokes other sessions, and
         sends receipts to both addresses.
+      operationId: postV1AuthEmailChangeConfirm
       requestBody:
         content:
           application/json:
@@ -4142,6 +4207,7 @@ paths:
   /v1/auth/forgot-password:
     post:
       description: Always returns a neutral success message to avoid account enumeration.
+      operationId: postV1AuthForgotPassword
       requestBody:
         content:
           application/json:
@@ -4177,6 +4243,7 @@ paths:
       description: Returns a backend access token, refresh token, session id, and
         user profile unless MFA is enrolled, in which case it returns a short-lived
         challenge token instead.
+      operationId: postV1AuthLogin
       requestBody:
         content:
           application/json:
@@ -4217,6 +4284,7 @@ paths:
     post:
       description: Revokes the supplied refresh token. The body is optional so clients
         can call this idempotently during local sign-out.
+      operationId: postV1AuthLogout
       requestBody:
         content:
           application/json:
@@ -4240,6 +4308,7 @@ paths:
     delete:
       description: Validates a TOTP code for the authenticated user, deletes the MFA
         enrollment, and revokes all sessions except the current one.
+      operationId: deleteV1AuthMfa
       requestBody:
         content:
           application/json:
@@ -4290,6 +4359,7 @@ paths:
       description: Returns whether two-factor authentication is enabled or pending
         for the authenticated user. Pending enrollments include the current otpauth
         URI and manual secret so setup can resume after a refresh.
+      operationId: getV1AuthMfa
       responses:
         "200":
           content:
@@ -4319,6 +4389,7 @@ paths:
       description: Validates the submitted TOTP code against the pending MFA enrollment,
         enables two-factor authentication, issues recovery codes once, marks the current
         session MFA-verified, and revokes all other sessions.
+      operationId: postV1AuthMfaConfirm
       requestBody:
         content:
           application/json:
@@ -4373,6 +4444,7 @@ paths:
     post:
       description: Generates a new TOTP secret, stores it as a pending MFA enrollment,
         and returns both the otpauth URI and manual secret for the authenticated user.
+      operationId: postV1AuthMfaEnroll
       responses:
         "200":
           content:
@@ -4413,6 +4485,7 @@ paths:
     post:
       description: Validates a short-lived MFA recovery token, revokes every active
         session for the account, and disables MFA.
+      operationId: postV1AuthMfaRecover
       requestBody:
         content:
           application/json:
@@ -4454,6 +4527,7 @@ paths:
       description: Always returns a neutral success message to avoid account enumeration.
         When the account exists and MFA is active, emails a short-lived recovery link
         that disables MFA.
+      operationId: postV1AuthMfaRecoveryEmail
       requestBody:
         content:
           application/json:
@@ -4494,6 +4568,7 @@ paths:
     post:
       description: Validates an MFA challenge token plus a TOTP code or recovery code,
         then issues a fully authenticated MFA-verified session.
+      operationId: postV1AuthMfaVerify
       requestBody:
         content:
           application/json:
@@ -4540,6 +4615,7 @@ paths:
     post:
       description: Exchanges a signed NextAuth-to-backend OAuth handshake for backend
         access and refresh tokens. The signature covers provider identity and timestamp.
+      operationId: postV1AuthOauth
       requestBody:
         content:
           application/json:
@@ -4576,10 +4652,67 @@ paths:
       summary: Complete OAuth backend sign-in
       tags:
       - auth
+  /v1/auth/oauth/email-change/initiate:
+    post:
+      description: For accounts with no password, exchanges a fresh signed OAuth handshake
+        for a single-use re-authentication token that can be presented to PUT /v1/users/me/email
+        in place of `current_password`.
+      operationId: postV1AuthOauthEmailChangeInitiate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/internal_handler.oauthEmailChangeReauthRequest'
+        description: Signed OAuth handshake
+        required: true
+        x-originalParamName: request
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_marko-stanojevic_project-ostgut_backend_internal_handler_responses.OAuthEmailChangeReauth'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_marko-stanojevic_project-ostgut_backend_internal_apierror.Response'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_marko-stanojevic_project-ostgut_backend_internal_apierror.Response'
+          description: Unauthorized
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_marko-stanojevic_project-ostgut_backend_internal_apierror.Response'
+          description: Conflict
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_marko-stanojevic_project-ostgut_backend_internal_apierror.Response'
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/github_com_marko-stanojevic_project-ostgut_backend_internal_apierror.Response'
+          description: Internal Server Error
+      security:
+      - BearerAuth: []
+      summary: Issue an OAuth re-authentication token for email change
+      tags:
+      - auth
   /v1/auth/oauth/link:
     post:
       description: Links the signed OAuth provider identity to the authenticated account
         when the request carries a valid single-use link-intent token.
+      operationId: postV1AuthOauthLink
       requestBody:
         content:
           application/json:
@@ -4634,6 +4767,7 @@ paths:
     post:
       description: Validates a sudo-scoped access token and issues a short-lived link-intent
         token for linking an OAuth provider to the authenticated account.
+      operationId: postV1AuthOauthLinkInitiate
       requestBody:
         content:
           application/json:
@@ -4676,6 +4810,7 @@ paths:
     post:
       description: Rotates a refresh token and returns a fresh access and refresh
         token pair. Refresh-token reuse revokes all sessions for the affected account.
+      operationId: postV1AuthRefresh
       requestBody:
         content:
           application/json:
@@ -4716,6 +4851,7 @@ paths:
     post:
       description: Creates an account and optionally converts a pre-login anonymous
         session into the new user account.
+      operationId: postV1AuthRegister
       requestBody:
         content:
           application/json:
@@ -4756,6 +4892,7 @@ paths:
     post:
       description: Updates a password with a valid reset token and revokes all existing
         refresh tokens for the account.
+      operationId: postV1AuthResetPassword
       requestBody:
         content:
           application/json:
@@ -4786,6 +4923,7 @@ paths:
     post:
       description: Verifies the current password and returns an access token carrying
         a short-lived sudo authorization window for sensitive operations.
+      operationId: postV1AuthSudo
       requestBody:
         content:
           application/json:
@@ -4834,6 +4972,7 @@ paths:
     get:
       description: Returns catalog cards for browse. Authenticated users need browser_access;
         anonymous users must pass X-Anonymous-Session.
+      operationId: getV1Catalog
       parameters:
       - description: Anonymous browse session token
         in: header
@@ -4895,6 +5034,7 @@ paths:
   /v1/catalog/{id}:
     get:
       description: Returns full catalog entry details.
+      operationId: getV1CatalogById
       parameters:
       - description: Catalog entry id or slug
         in: path
@@ -4928,6 +5068,7 @@ paths:
     get:
       description: Returns the latest cached now-playing snapshot immediately. Clients
         should poll this endpoint every 15-30 seconds.
+      operationId: getV1CatalogByIdNowPlaying
       parameters:
       - description: Anonymous listener session token
         in: header
@@ -4979,6 +5120,7 @@ paths:
     get:
       description: Returns playback URL, variants, and metadata plan for a catalog
         entry.
+      operationId: getV1CatalogByIdPlayback
       parameters:
       - description: Anonymous listener session token
         in: header
@@ -5031,6 +5173,7 @@ paths:
       description: Returns up to six recommended catalog cards for the requested entry.
         Authenticated users with listening history receive history-weighted results;
         anonymous listeners receive tag-similarity fallback results.
+      operationId: getV1CatalogByIdRecommendations
       parameters:
       - description: Anonymous browse session token
         in: header
@@ -5076,6 +5219,7 @@ paths:
   /v1/catalog/filters:
     get:
       description: Returns available filter values for the catalog.
+      operationId: getV1CatalogFilters
       parameters:
       - description: Filter by kind (station, show)
         in: query
@@ -5103,6 +5247,7 @@ paths:
       description: Accepts authenticated player failure reports for a published active
         stream. Valid reports always return 200 OK, including node-local cooldown
         discards.
+      operationId: postV1CatalogStreamByIdHealth
       parameters:
       - description: Stream id
         in: path
@@ -5142,6 +5287,7 @@ paths:
     get:
       description: Returns up to 20 published stations ranked by unique listeners
         in the last 30 days, with staff-pick fallback when listener signal is sparse.
+      operationId: getV1CatalogTrending
       parameters:
       - description: Anonymous browse session token
         in: header
@@ -5182,6 +5328,7 @@ paths:
     get:
       description: Returns editable catalog entries with moderation, stream, and media
         details for editor and admin workspaces.
+      operationId: getV1EditorCatalog
       parameters:
       - description: Filter by status (pending, published)
         in: query
@@ -5236,6 +5383,7 @@ paths:
     post:
       description: Creates an editable catalog entry with its initial stream set for
         editor and admin workspaces.
+      operationId: postV1EditorCatalog
       requestBody:
         content:
           application/json:
@@ -5296,6 +5444,7 @@ paths:
     delete:
       description: Deletes an editable catalog entry after confirm-slug verification.
         Admin role is required.
+      operationId: deleteV1EditorCatalogById
       parameters:
       - description: Catalog entry id
         in: path
@@ -5358,6 +5507,7 @@ paths:
     get:
       description: Returns an editable catalog entry with streams, media, and selection
         preview for editor and admin workspaces.
+      operationId: getV1EditorCatalogById
       parameters:
       - description: Catalog entry id or slug
         in: path
@@ -5409,6 +5559,7 @@ paths:
     put:
       description: Updates editable catalog entry fields and optional stream configuration
         for editor and admin workspaces.
+      operationId: putV1EditorCatalogById
       parameters:
       - description: Catalog entry id
         in: path
@@ -5482,6 +5633,7 @@ paths:
     post:
       description: Runs one or more catalog maintenance domains for one station stream
         and returns per-domain results.
+      operationId: postV1EditorCatalogByIdStreamsByStreamIDProbe
       parameters:
       - description: Catalog entry id
         in: path
@@ -5548,6 +5700,7 @@ paths:
     post:
       description: Bulk updates catalog entry publish status for editor and admin
         workspaces.
+      operationId: postV1EditorCatalogBulk
       requestBody:
         content:
           application/json:
@@ -5613,6 +5766,7 @@ paths:
   /v1/editor/overview:
     get:
       description: Returns editorial station quality and moderation overview metrics.
+      operationId: getV1EditorOverview
       responses:
         "200":
           content:
@@ -5648,6 +5802,7 @@ paths:
       description: Accepts a scrubbed playback milestone event from the frontend,
         validates it, emits an OpenTelemetry span, and records authenticated variant_started
         listens for recommendations.
+      operationId: postV1EventsPlayback
       parameters:
       - description: Anonymous browse session token
         in: header
@@ -5691,6 +5846,7 @@ paths:
   /v1/media/{id}:
     get:
       description: Returns a media asset visible to the authenticated user.
+      operationId: getV1MediaById
       parameters:
       - description: Media asset id
         in: path
@@ -5738,6 +5894,7 @@ paths:
     post:
       description: Processes an uploaded media object and marks the asset ready or
         rejected.
+      operationId: postV1MediaComplete
       requestBody:
         content:
           application/json:
@@ -5792,6 +5949,7 @@ paths:
     post:
       description: Creates a pending media asset and returns a signed upload URL.
         Avatar uploads are user-owned; icon uploads require editor or admin role.
+      operationId: postV1MediaUploadIntent
       requestBody:
         content:
           application/json:
@@ -5846,6 +6004,7 @@ paths:
     put:
       description: Uploads the raw media bytes for a previously created upload intent.
         The token is embedded in the upload_url returned by POST /media/upload-intent.
+      operationId: putV1MediaUploadById
       parameters:
       - description: Media asset id
         in: path
@@ -5900,6 +6059,7 @@ paths:
   /v1/search:
     get:
       description: Full-text search across catalog entries.
+      operationId: getV1Search
       parameters:
       - description: Search text
         in: query
@@ -5943,6 +6103,7 @@ paths:
     delete:
       description: Permanently deletes the authenticated user's account and user-owned
         media blobs. Requires a recent X-Privacy-Action-Token from POST /users/me/deletion-request.
+      operationId: deleteV1UsersMe
       parameters:
       - description: Recent deletion action token
         in: header
@@ -5979,6 +6140,7 @@ paths:
     get:
       description: Returns the authenticated user's profile and resolved avatar media
         when present.
+      operationId: getV1UsersMe
       responses:
         "200":
           content:
@@ -6011,6 +6173,7 @@ paths:
       - users
     put:
       description: Updates the authenticated user's display name.
+      operationId: putV1UsersMe
       requestBody:
         content:
           application/json:
@@ -6053,6 +6216,7 @@ paths:
     get:
       description: Returns the authenticated user's current subscription plan, status,
         licensing state, feature grants, and access capabilities.
+      operationId: getV1UsersMeAccess
       responses:
         "200":
           content:
@@ -6079,6 +6243,7 @@ paths:
       - users
   /v1/users/me/avatar:
     delete:
+      operationId: deleteV1UsersMeAvatar
       responses:
         "204":
           description: No Content
@@ -6103,6 +6268,7 @@ paths:
     post:
       description: Verifies the password and returns a short-lived action token required
         in X-Privacy-Action-Token for DELETE /users/me.
+      operationId: postV1UsersMeDeletionRequest
       requestBody:
         content:
           application/json:
@@ -6163,6 +6329,7 @@ paths:
     put:
       description: Records a pending email change, mails a confirm link to the new
         address and a cancel link to the current verified address.
+      operationId: putV1UsersMeEmail
       requestBody:
         content:
           application/json:
@@ -6207,6 +6374,7 @@ paths:
     delete:
       description: Clears a pending email change requested by the authenticated user.
         Does not revoke sessions and does not force a password reset.
+      operationId: deleteV1UsersMeEmailPending
       responses:
         "204":
           description: No Content
@@ -6230,6 +6398,7 @@ paths:
   /v1/users/me/export:
     get:
       description: Returns the authenticated user's GDPR account export.
+      operationId: getV1UsersMeExport
       responses:
         "200":
           content:
@@ -6264,6 +6433,7 @@ paths:
     get:
       description: Returns up to 100 favorited station cards ordered by most recently
         favorited first.
+      operationId: getV1UsersMeFavorites
       responses:
         "200":
           content:
@@ -6291,6 +6461,7 @@ paths:
     post:
       description: Adds the specified station to the authenticated user's favorites.
         Returns 204 whether or not it was already favorited.
+      operationId: postV1UsersMeFavorites
       requestBody:
         content:
           application/json:
@@ -6335,6 +6506,7 @@ paths:
     delete:
       description: Removes the specified station from the authenticated user's favorites.
         Returns 204 whether or not it was already favorited.
+      operationId: deleteV1UsersMeFavoritesById
       parameters:
       - description: Catalog entry id
         in: path
@@ -6372,6 +6544,7 @@ paths:
     get:
       description: Returns the linked OAuth providers for the authenticated user plus
         whether a password is set.
+      operationId: getV1UsersMeLinkedAccounts
       responses:
         "200":
           content:
@@ -6406,6 +6579,7 @@ paths:
     delete:
       description: Unlinks the specified OAuth provider unless it is the last remaining
         authentication method. Requires a current sudo window.
+      operationId: deleteV1UsersMeLinkedAccountsById
       parameters:
       - description: OAuth provider id
         in: path
@@ -6455,6 +6629,7 @@ paths:
     put:
       description: Sets or changes the authenticated user's password. Current password
         is required when one is already set.
+      operationId: putV1UsersMePassword
       requestBody:
         content:
           application/json:
@@ -6499,6 +6674,7 @@ paths:
     get:
       description: Returns persisted player controls for the authenticated user. Requires
         core_access.
+      operationId: getV1UsersMePlayerPreferences
       responses:
         "200":
           content:
@@ -6538,6 +6714,7 @@ paths:
     put:
       description: Stores player controls for the authenticated user. Writes are conflict-resolved
         by updated_at; stale writes return stale=true with the current server value.
+      operationId: putV1UsersMePlayerPreferences
       requestBody:
         content:
           application/json:
@@ -6591,6 +6768,7 @@ paths:
   /v1/users/me/preferences:
     put:
       description: Updates the authenticated user's timezone preference.
+      operationId: putV1UsersMePreferences
       requestBody:
         content:
           application/json:
@@ -6644,6 +6822,7 @@ paths:
   /v1/users/me/sessions:
     delete:
       description: Revokes every active refresh token for the authenticated user.
+      operationId: deleteV1UsersMeSessions
       responses:
         "204":
           description: No Content
@@ -6666,6 +6845,7 @@ paths:
       - auth
     get:
       description: Returns active refresh-token sessions for the authenticated user.
+      operationId: getV1UsersMeSessions
       parameters:
       - description: Session id to mark as current
         in: query
@@ -6699,6 +6879,7 @@ paths:
   /v1/users/me/sessions/{id}:
     delete:
       description: Revokes one active account session owned by the authenticated user.
+      operationId: deleteV1UsersMeSessionsById
       parameters:
       - description: Session id
         in: path
@@ -6742,6 +6923,7 @@ paths:
     post:
       description: Revokes every active session for the authenticated user except
         the current one.
+      operationId: postV1UsersMeSessionsRevokeAll
       responses:
         "204":
           description: No Content
@@ -6766,6 +6948,7 @@ paths:
     get:
       description: Returns the authenticated user's current subscription plan and
         status.
+      operationId: getV1UsersMeSubscription
       responses:
         "200":
           content:
@@ -6790,3 +6973,5 @@ paths:
       summary: Get my subscription
       tags:
       - users
+servers:
+- url: https://api.sink.fm

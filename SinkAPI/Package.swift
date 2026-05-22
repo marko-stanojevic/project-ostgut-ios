@@ -1,18 +1,36 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-// Swift OpenAPI Generator plugin and runtime dependencies are wired in ios-6.
-// This package currently provides the openapi.yaml spec and the APIClient stub.
 let package = Package(
     name: "SinkAPI",
     platforms: [.iOS(.v17)],
     products: [
         .library(name: "SinkAPI", targets: ["SinkAPI"]),
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/apple/swift-openapi-generator",
+            from: "1.0.0"
+        ),
+        .package(
+            url: "https://github.com/apple/swift-openapi-runtime",
+            from: "1.0.0"
+        ),
+        .package(
+            url: "https://github.com/apple/swift-openapi-urlsession",
+            from: "1.0.0"
+        ),
+    ],
     targets: [
         .target(
             name: "SinkAPI",
-            dependencies: []
+            dependencies: [
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .product(name: "OpenAPIURLSession", package: "swift-openapi-urlsession"),
+            ],
+            plugins: [
+                .plugin(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
+            ]
         ),
         .testTarget(
             name: "SinkAPITests",
