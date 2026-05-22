@@ -1,4 +1,5 @@
 import SinkAPI
+import SinkPlayback
 import SwiftUI
 
 @main
@@ -8,6 +9,7 @@ struct SinkApp: App {
     private let apiClient: APIClient
     private let catalogViewModel: CatalogViewModel
     private let searchViewModel: SearchViewModel
+    private let playbackService: AVPlayerPlaybackService
 
     init() {
         let serverURL = Self.resolveServerURL()
@@ -41,6 +43,10 @@ struct SinkApp: App {
             apiClient: apiClient,
             anonymousSessionStore: anonymousSessionStore
         )
+        self.playbackService = AVPlayerPlaybackService { id in
+            let result = try await apiClient.fetchPlayback(id: id)
+            return PlaybackToken(url: result.url, expiresAt: result.expiresAt)
+        }
 
         Task { await Self.restoreAuthState(tokenStore: tokenStore, navigation: navigation) }
     }
@@ -53,6 +59,7 @@ struct SinkApp: App {
                 .environment(catalogViewModel)
                 .environment(searchViewModel)
                 .environment(\.apiClient, apiClient)
+                .environment(\.playbackService, playbackService)
         }
     }
 

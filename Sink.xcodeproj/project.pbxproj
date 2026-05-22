@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B0920EAD2FBFB3120060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EAC2FBFB3120060419F /* SinkAPI */; };
 		B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EA62FBFB3120060419F /* SinkPlayback */; };
+		B0920EAD2FBFB3120060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EAC2FBFB3120060419F /* SinkAPI */; };
 		B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0A2FBFB08A0060419F /* SinkAPI */; };
+		B1920E0D2FBFB08A0060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0E2FBFB08A0060419F /* SinkPlayback */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */,
+				B1920E0D2FBFB08A0060419F /* SinkPlayback in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,29 +76,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B1920E062FBFB08A0060419F /* SinkTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B1920E092FBFB08A0060419F /* Build configuration list for PBXNativeTarget "SinkTests" */;
-			buildPhases = (
-				B1920E032FBFB08A0060419F /* Sources */,
-				B1920E042FBFB08A0060419F /* Frameworks */,
-				B1920E052FBFB08A0060419F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				B1920E022FBFB08A0060419F /* SinkTests */,
-			);
-			name = SinkTests;
-			packageProductDependencies = (
-				B1920E0A2FBFB08A0060419F /* SinkAPI */,
-			);
-			productName = SinkTests;
-			productReference = B1920E012FBFB08A0060419F /* SinkTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		B0920E612FBFB08A0060419F /* Sink */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B0920E6D2FBFB08C0060419F /* Build configuration list for PBXNativeTarget "Sink" */;
@@ -120,6 +99,30 @@
 			productName = Sink;
 			productReference = B0920E622FBFB08A0060419F /* Sink.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B1920E062FBFB08A0060419F /* SinkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1920E092FBFB08A0060419F /* Build configuration list for PBXNativeTarget "SinkTests" */;
+			buildPhases = (
+				B1920E032FBFB08A0060419F /* Sources */,
+				B1920E042FBFB08A0060419F /* Frameworks */,
+				B1920E052FBFB08A0060419F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B1920E022FBFB08A0060419F /* SinkTests */,
+			);
+			name = SinkTests;
+			packageProductDependencies = (
+				B1920E0A2FBFB08A0060419F /* SinkAPI */,
+				B1920E0E2FBFB08A0060419F /* SinkPlayback */,
+			);
+			productName = SinkTests;
+			productReference = B1920E012FBFB08A0060419F /* SinkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -484,6 +487,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B0920EA62FBFB3120060419F /* SinkPlayback */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkPlayback;
+		};
 		B0920EAC2FBFB3120060419F /* SinkAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SinkAPI;
@@ -492,7 +499,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SinkAPI;
 		};
-		B0920EA62FBFB3120060419F /* SinkPlayback */ = {
+		B1920E0E2FBFB08A0060419F /* SinkPlayback */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SinkPlayback;
 		};

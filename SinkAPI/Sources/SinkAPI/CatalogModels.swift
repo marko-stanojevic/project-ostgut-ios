@@ -124,6 +124,16 @@ public struct CatalogPage: Sendable {
     }
 }
 
+public struct CatalogPlayback: Sendable {
+    public let url: URL
+    public let expiresAt: Date
+
+    public init(url: URL, expiresAt: Date) {
+        self.url = url
+        self.expiresAt = expiresAt
+    }
+}
+
 public struct AnonymousSessionToken: Sendable {
     public let token: String
     public let expiresAt: Date
@@ -232,6 +242,25 @@ struct CatalogDetailJSON: Decodable {
             featured: featured,
             isFavorited: isFavorited
         )
+    }
+}
+
+struct CatalogPlaybackJSON: Decodable {
+    struct Core: Decodable {
+        let url: String
+        let expiresAt: String
+    }
+
+    let playback: Core
+
+    func toModel() throws -> CatalogPlayback {
+        guard let url = URL(string: playback.url) else {
+            throw CatalogAPIError.invalidResponse("invalid playback URL")
+        }
+        guard let date = iso8601d.date(from: playback.expiresAt) else {
+            throw CatalogAPIError.invalidResponse("unparseable expires_at")
+        }
+        return CatalogPlayback(url: url, expiresAt: date)
     }
 }
 

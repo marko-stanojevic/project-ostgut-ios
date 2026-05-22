@@ -96,6 +96,25 @@ extension APIClient {
         return try decodeCatalogPage(data: data, response: response)
     }
 
+    // MARK: - Playback URL resolution
+
+    public func fetchPlayback(id: String) async throws -> CatalogPlayback {
+        let url = serverURL.appending(path: "/v1/catalog/\(id)/playback")
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        await authorizeRequest(&request, anonymousSessionToken: nil)
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw CatalogAPIError.invalidResponse("non-HTTP response")
+        }
+        if http.statusCode == 404 { throw CatalogAPIError.notFound }
+        guard http.statusCode == 200 else {
+            throw CatalogAPIError.httpError(statusCode: http.statusCode, message: nil)
+        }
+        return try catalogJSONDecoder.decode(CatalogPlaybackJSON.self, from: data).toModel()
+    }
+
     // MARK: - Helpers
 
     private func decodeCatalogPage(data: Data, response: URLResponse) throws -> CatalogPage {

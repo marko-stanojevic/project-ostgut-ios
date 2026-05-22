@@ -1,0 +1,143 @@
+import AVFoundation
+import MediaPlayer
+
+@Observable
+@MainActor
+public final class AVPlayerPlaybackService: PlaybackService {
+    public private(set) var state: PlaybackState = .idle
+
+    // Internal visibility allows the test target to inspect player state.
+    let player: AVPlayer
+    private let playbackURLResolver: @Sendable (String) async throws -> PlaybackToken
+    private var reResolveTask: Task<Void, Never>?
+
+    public init(
+        playbackURLResolver: @escaping @Sendable (String) async throws -> PlaybackToken,
+        player: AVPlayer = AVPlayer()
+    ) {
+        self.player = player
+        self.playbackURLResolver = playbackURLResolver
+        setupRemoteCommands()
+        setupInterruptionHandling()
+    }
+
+    // MARK: - PlaybackService
+
+    public func play(station: Station) async throws {
+        reResolveTask?.cancel()
+        reResolveTask = nil
+        state = .loading
+
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+        try? AVAudioSession.sharedInstance().setActive(true)
+
+        let token: PlaybackToken
+        do {
+            token = try await playbackURLResolver(station.id)
+        } catch {
+            state = .error(station: station, underlyingError: error)
+            throw error
+        }
+
+        player.replaceCurrentItem(with: AVPlayerItem(url: token.url))
+        player.play()
+        state = .playing(station: station)
+        updateNowPlaying(station: station)
+        scheduleReResolve(station: station, expiresAt: token.expiresAt)
+    }
+
+    public func pause() {
+        guard case .playing(let station) = state else { return }
+        player.pause()
+        state = .paused(station: station)
+    }
+
+    public func resume() {
+        guard case .paused(let station) = state else { return }
+        player.play()
+        state = .playing(station: station)
+    }
+
+    public func stop() {
+        reResolveTask?.cancel()
+        reResolveTask = nil
+        player.replaceCurrentItem(with: nil)
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+        state = .idle
+    }
+
+    // MARK: - Private
+
+    private func setupRemoteCommands() {
+        let center = MPRemoteCommandCenter.shared()
+        center.playCommand.addTarget { [weak self] _ in
+            Task { @MainActor [weak self] in self?.resume() }
+            return .success
+        }
+        center.pauseCommand.addTarget { [weak self] _ in
+            Task { @MainActor [weak self] in self?.pause() }
+            return .success
+        }
+        center.stopCommand.addTarget { [weak self] _ in
+            Task { @MainActor [weak self] in self?.stop() }
+            return .success
+        }
+    }
+
+    private func setupInterruptionHandling() {
+        NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: nil,
+            queue: nil
+        ) { [weak self] notification in
+            Task { @MainActor [weak self] in
+                self?.handleInterruption(notification)
+            }
+        }
+    }
+
+    private func handleInterruption(_ notification: Notification) {
+        guard
+            let typeValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSession.InterruptionType(rawValue: typeValue)
+        else { return }
+
+        switch type {
+        case .began:
+            if case .playing(let station) = state {
+                state = .paused(station: station)
+            }
+        case .ended:
+            let optionsValue = (notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt) ?? 0
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume), case .paused(let station) = state {
+                Task { try? await play(station: station) }
+            }
+        @unknown default:
+            break
+        }
+    }
+
+    private func updateNowPlaying(station: Station) {
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [
+            MPMediaItemPropertyTitle: station.name,
+            MPNowPlayingInfoPropertyIsLiveStream: true
+        ]
+    }
+
+    private func scheduleReResolve(station: Station, expiresAt: Date) {
+        let interval = expiresAt.timeIntervalSinceNow - 30
+        guard interval > 0 else { return }
+
+        reResolveTask = Task {
+            try? await Task.sleep(for: .seconds(interval))
+            guard !Task.isCancelled else { return }
+            guard case .playing(let current) = state, current.id == station.id else { return }
+            guard let newToken = try? await playbackURLResolver(station.id) else { return }
+            player.replaceCurrentItem(with: AVPlayerItem(url: newToken.url))
+            player.play()
+            scheduleReResolve(station: station, expiresAt: newToken.expiresAt)
+        }
+    }
+}
