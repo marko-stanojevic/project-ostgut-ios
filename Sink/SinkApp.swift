@@ -7,6 +7,7 @@ struct SinkApp: App {
     private let navigation: AppNavigation
     private let authViewModel: AuthViewModel
     private let apiClient: APIClient
+    private let userAccessStore: UserAccessStore
     private let catalogViewModel: CatalogViewModel
     private let searchViewModel: SearchViewModel
     private let playbackService: AVPlayerPlaybackService
@@ -27,13 +28,16 @@ struct SinkApp: App {
         }
 
         let anonymousSessionStore = AnonymousSessionStore(apiClient: apiClient)
+        let userAccessStore = UserAccessStore { try await apiClient.fetchUserAccess() }
 
         self.navigation = navigation
         self.apiClient = apiClient
+        self.userAccessStore = userAccessStore
         self.authViewModel = AuthViewModel(
             apiClient: apiClient,
             tokenStore: tokenStore,
-            navigation: navigation
+            navigation: navigation,
+            userAccessStore: userAccessStore
         )
         self.catalogViewModel = CatalogViewModel(
             apiClient: apiClient,
@@ -54,7 +58,11 @@ struct SinkApp: App {
             }
         )
 
-        Task { await Self.restoreAuthState(tokenStore: tokenStore, navigation: navigation) }
+        Task {
+            await Self.restoreAuthState(
+                tokenStore: tokenStore, navigation: navigation, userAccessStore: userAccessStore
+            )
+        }
     }
 
     var body: some Scene {
@@ -64,6 +72,7 @@ struct SinkApp: App {
                 .environment(authViewModel)
                 .environment(catalogViewModel)
                 .environment(searchViewModel)
+                .environment(userAccessStore)
                 .environment(\.apiClient, apiClient)
                 .environment(\.playbackService, playbackService)
         }
@@ -81,10 +90,15 @@ struct SinkApp: App {
         #endif
     }
 
-    private static func restoreAuthState(tokenStore: TokenStore, navigation: AppNavigation) async {
+    private static func restoreAuthState(
+        tokenStore: TokenStore,
+        navigation: AppNavigation,
+        userAccessStore: UserAccessStore
+    ) async {
         let authenticated = await tokenStore.isAuthenticated
         if authenticated {
             navigation.signedIn()
+            await userAccessStore.refresh()
         }
     }
 }

@@ -8,8 +8,10 @@ struct StationDetailView: View {
 
     @Environment(\.apiClient) private var apiClient
     @Environment(\.playbackService) private var playbackService
+    @Environment(UserAccessStore.self) private var userAccessStore
     @State private var detail: CatalogDetail?
     @State private var errorMessage: String?
+    @State private var showUpgradeSheet = false
 
     var body: some View {
         ScrollView {
@@ -21,6 +23,7 @@ struct StationDetailView: View {
         .navigationTitle(detail?.name ?? station?.name ?? "")
         .navigationBarTitleDisplayMode(.large)
         .task { await loadDetail() }
+        .sheet(isPresented: $showUpgradeSheet) { UpgradeView() }
     }
 
     @ViewBuilder
@@ -114,11 +117,12 @@ struct StationDetailView: View {
 
     private func playButton(for detail: CatalogDetail) -> some View {
         let isCurrentStation = playbackService?.state.currentStation?.id == stationId
+        let canPlay = userAccessStore.hasCoreAccess || userAccessStore.hasBrowserAccess
         return Button {
             guard let service = playbackService else { return }
             if isCurrentStation {
                 service.stop()
-            } else {
+            } else if canPlay {
                 let playStation = Station(
                     id: detail.id,
                     name: detail.name,
@@ -126,6 +130,8 @@ struct StationDetailView: View {
                     iconURL: detail.icon.flatMap { URL(string: $0.url) }
                 )
                 Task { try? await service.play(station: playStation) }
+            } else {
+                showUpgradeSheet = true
             }
         } label: {
             Label(

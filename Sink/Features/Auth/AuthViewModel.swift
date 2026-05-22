@@ -17,11 +17,18 @@ final class AuthViewModel {
     private let apiClient: APIClient
     private let tokenStore: TokenStore
     private let navigation: AppNavigation
+    private let userAccessStore: UserAccessStore
 
-    init(apiClient: APIClient, tokenStore: TokenStore, navigation: AppNavigation) {
+    init(
+        apiClient: APIClient,
+        tokenStore: TokenStore,
+        navigation: AppNavigation,
+        userAccessStore: UserAccessStore
+    ) {
         self.apiClient = apiClient
         self.tokenStore = tokenStore
         self.navigation = navigation
+        self.userAccessStore = userAccessStore
     }
 
     // MARK: - Email / Password
@@ -38,6 +45,7 @@ final class AuthViewModel {
             case .success(let tokens):
                 await tokenStore.store(tokens)
                 navigation.signedIn()
+                await userAccessStore.refresh()
             case .mfaRequired:
                 state = .error("MFA is required. Please sign in via the web app to complete setup.")
             }
@@ -60,6 +68,7 @@ final class AuthViewModel {
             let tokens = try await apiClient.register(email: email, password: password)
             await tokenStore.store(tokens)
             navigation.signedIn()
+            await userAccessStore.refresh()
         } catch {
             state = .error(friendlyMessage(for: error))
         }
@@ -80,6 +89,7 @@ final class AuthViewModel {
             let tokens = try await apiClient.signInWithApple(identityToken: identityToken)
             await tokenStore.store(tokens)
             navigation.signedIn()
+            await userAccessStore.refresh()
         } catch {
             state = .error(friendlyMessage(for: error))
         }
@@ -97,6 +107,7 @@ final class AuthViewModel {
     func logout() async {
         let refreshToken = await tokenStore.storedRefreshToken
         await tokenStore.clear()
+        userAccessStore.clearAccess()
         navigation.signedOut()
         if let token = refreshToken {
             try? await apiClient.logout(refreshToken: token)

@@ -13,6 +13,24 @@
 		B1920E0D2FBFB08A0060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0E2FBFB08A0060419F /* SinkPlayback */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B2920E012FBFB08A0060419F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B0920E5A2FBFB08A0060419F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B0920E612FBFB08A0060419F;
+			remoteInfo = Sink;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		B2920E022FBFB08A0060419F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0920E612FBFB08A0060419F /* Sink */;
+			targetProxy = B2920E012FBFB08A0060419F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXFileReference section */
 		B0920E622FBFB08A0060419F /* Sink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1920E012FBFB08A0060419F /* SinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -111,6 +129,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				B2920E022FBFB08A0060419F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				B1920E022FBFB08A0060419F /* SinkTests */,
