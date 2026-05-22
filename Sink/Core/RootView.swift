@@ -6,17 +6,30 @@ struct RootView: View {
     @Environment(UserAccessStore.self) private var userAccessStore
 
     var body: some View {
-        if navigation.isAuthenticated {
-            if userAccessStore.access == nil {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if userAccessStore.hasNativeAppAccess {
-                MainTabView()
-            } else {
+        AppShell()
+            .sheet(isPresented: authSheetPresented) {
+                LoginView()
+            }
+            .fullScreenCover(isPresented: upgradePresented) {
                 UpgradeView()
             }
-        } else {
-            MainTabView()
-        }
+    }
+
+    private var authSheetPresented: Binding<Bool> {
+        Binding(
+            get: { !navigation.isAuthenticated },
+            set: { _ in }
+        )
+    }
+
+    private var upgradePresented: Binding<Bool> {
+        Binding(
+            get: {
+                navigation.isAuthenticated &&
+                    userAccessStore.access != nil &&
+                    !userAccessStore.hasNativeAppAccess
+            },
+            set: { _ in }
+        )
     }
 }
