@@ -2,11 +2,12 @@ import Foundation
 import SinkAPI
 import SinkPlayback
 import Testing
-@testable import Sink
+@testable import SinkCore
 
 @Suite("PlayerPreferencesStore")
 @MainActor
 struct PlayerPreferencesStoreTests {
+    private let testDefaultsSuiteName = "PlayerPreferencesStoreTests"
     private let testDefaults = UserDefaults(suiteName: "PlayerPreferencesStoreTests")!
 
     private func makePreferences(
@@ -22,10 +23,16 @@ struct PlayerPreferencesStoreTests {
         serverUpdatedAt: Date = Date()
     ) -> PlayerPreferencesStore {
         let prefs = serverPrefs ?? makePreferences(updatedAt: serverUpdatedAt)
+        resetDefaults()
         return PlayerPreferencesStore(
             fetcher: { prefs },
-            saver: { PlayerPreferencesWriteResult(stale: false, preferences: $0) }
+            saver: { PlayerPreferencesWriteResult(stale: false, preferences: $0) },
+            defaults: testDefaults
         )
+    }
+
+    private func resetDefaults() {
+        testDefaults.removePersistentDomain(forName: testDefaultsSuiteName)
     }
 
     // MARK: - Conflict resolution
@@ -54,9 +61,11 @@ struct PlayerPreferencesStoreTests {
         let serverTime = Date().addingTimeInterval(3600)
         let serverPrefs = makePreferences(volume: 0.2, updatedAt: serverTime)
         let fallback = makePreferences()
+        resetDefaults()
         let store = PlayerPreferencesStore(
             fetcher: { fallback },
-            saver: { _ in PlayerPreferencesWriteResult(stale: true, preferences: serverPrefs) }
+            saver: { _ in PlayerPreferencesWriteResult(stale: true, preferences: serverPrefs) },
+            defaults: testDefaults
         )
         store.updateVolume(0.7)
         // Trigger save immediately (bypass debounce for test)
@@ -106,13 +115,5 @@ struct PlayerPreferencesStoreTests {
         store.clearPreferences()
         #expect(store.volume == 1.0)
         #expect(store.restoredStation == nil)
-    }
-}
-
-// MARK: - Test hook
-
-extension PlayerPreferencesStore {
-    func performSaveForTest() async {
-        await performSave()
     }
 }

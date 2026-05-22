@@ -1,10 +1,12 @@
 import SwiftUI
 
-struct UpgradeView: View {
+public struct UpgradeView: View {
     @Environment(AuthViewModel.self) private var authViewModel
     @Environment(UserAccessStore.self) private var userAccessStore
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         VStack(spacing: 0) {
             Spacer()
             VStack(spacing: 20) {
@@ -16,7 +18,7 @@ struct UpgradeView: View {
                     Text("Upgrade Required")
                         .font(.title2)
                         .fontWeight(.bold)
-                    Text("Your current plan doesn't include iOS app access. Upgrade at sink.fm to continue listening.")
+                    Text("Your current plan doesn't include native app access. Upgrade at sink.fm to continue listening.")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)

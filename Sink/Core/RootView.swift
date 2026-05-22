@@ -1,3 +1,4 @@
+import SinkCore
 import SwiftUI
 
 struct RootView: View {
@@ -9,7 +10,7 @@ struct RootView: View {
             if userAccessStore.access == nil {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if userAccessStore.hasIOSAppAccess {
+            } else if userAccessStore.hasNativeAppAccess {
                 MainTabView()
             } else {
                 UpgradeView()

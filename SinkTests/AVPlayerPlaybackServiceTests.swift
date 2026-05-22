@@ -8,6 +8,21 @@ struct AVPlayerPlaybackServiceTests {
     private let station = Station(id: "s1", name: "Test FM", slug: "test-fm")
     private let streamURL = URL(string: "https://stream.example.com/live.mp3")! // swiftlint:disable:this force_unwrapping
 
+    private func waitForPlayingState(
+        service: AVPlayerPlaybackService,
+        timeout: Duration = .seconds(1)
+    ) async -> Bool {
+        let deadline = ContinuousClock.now + timeout
+        while ContinuousClock.now < deadline {
+            if case .playing = service.state {
+                return true
+            }
+            await Task.yield()
+            try? await Task.sleep(for: .milliseconds(20))
+        }
+        return false
+    }
+
     // MARK: - play()
 
     @Test("play calls resolver with the station ID")
@@ -142,10 +157,8 @@ struct AVPlayerPlaybackServiceTests {
         // Call directly to avoid non-determinism from shared NotificationCenter.
         service.handleInterruption(notification)
 
-        // Allow the Task spawned by shouldResume to call play().
-        try await Task.sleep(for: .milliseconds(200))
-
-        guard case .playing = service.state else {
+        let resumed = await waitForPlayingState(service: service)
+        guard resumed else {
             Issue.record("Expected .playing after interruption-ended-shouldResume")
             return
         }

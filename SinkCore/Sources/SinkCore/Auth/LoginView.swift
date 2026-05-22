@@ -1,15 +1,16 @@
 import AuthenticationServices
 import SwiftUI
 
-struct LoginView: View {
+public struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showSignUp = false
 
     @Environment(AuthViewModel.self) private var viewModel
-    @Environment(AppNavigation.self) private var navigation
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 Spacer()
@@ -57,7 +58,7 @@ struct LoginView: View {
         VStack(spacing: 16) {
             TextField("Email", text: $email)
                 .textContentType(.emailAddress)
-                .emailInputModifiers()
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding()
                 .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 12))
@@ -139,7 +140,7 @@ struct LoginView: View {
 // MARK: - AuthViewModel.State equatable helper
 
 extension AuthViewModel.State: Equatable {
-    static func == (lhs: AuthViewModel.State, rhs: AuthViewModel.State) -> Bool {
+    public static func == (lhs: AuthViewModel.State, rhs: AuthViewModel.State) -> Bool {
         switch (lhs, rhs) {
         case (.idle, .idle), (.loading, .loading): return true
         case (.error(let lhsMessage), .error(let rhsMessage)): return lhsMessage == rhsMessage

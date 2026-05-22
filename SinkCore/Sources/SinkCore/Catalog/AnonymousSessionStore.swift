@@ -1,16 +1,15 @@
 import Foundation
 import SinkAPI
 
-actor AnonymousSessionStore {
+public actor AnonymousSessionStore {
     private let apiClient: APIClient
     private var cached: AnonymousSessionToken?
 
-    init(apiClient: APIClient) {
+    public init(apiClient: APIClient) {
         self.apiClient = apiClient
     }
 
-    // Returns a valid anonymous session token, refreshing when within 60 s of expiry.
-    func sessionToken() async throws -> String {
+    public func sessionToken() async throws -> String {
         let now = Date()
         if let cached, cached.expiresAt > now.addingTimeInterval(60) {
             return cached.token

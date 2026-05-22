@@ -2,15 +2,12 @@ import Foundation
 import Observation
 import SinkAPI
 import SinkPlayback
-#if os(iOS)
-import UIKit
-#endif
 
 @Observable
 @MainActor
-final class PlayerPreferencesStore {
-    private(set) var volume: Double = 1.0
-    private(set) var restoredStation: Station?
+public final class PlayerPreferencesStore {
+    public private(set) var volume: Double = 1.0
+    public private(set) var restoredStation: Station?
 
     private var lastItem: PlaybackItem?
     private var updatedAt: Date = .distantPast
@@ -18,38 +15,30 @@ final class PlayerPreferencesStore {
     private let fetcher: @Sendable () async throws -> PlayerPreferences
     private let saver: @Sendable (PlayerPreferences) async throws -> PlayerPreferencesWriteResult
     private let volumeApplicator: (@Sendable (Double) -> Void)?
+    private let defaults: UserDefaults
 
     nonisolated(unsafe) private var saveTask: Task<Void, Never>?
-#if os(iOS)
-    nonisolated(unsafe) private var foregroundObserver: (any NSObjectProtocol)?
-#endif
 
     private static let defaultsKey = "fm.sink.playerPreferences"
 
-    init(
+    public init(
         fetcher: @escaping @Sendable () async throws -> PlayerPreferences,
         saver: @escaping @Sendable (PlayerPreferences) async throws -> PlayerPreferencesWriteResult,
-        volumeApplicator: (@Sendable (Double) -> Void)? = nil
+        volumeApplicator: (@Sendable (Double) -> Void)? = nil,
+        defaults: UserDefaults = .standard
     ) {
         self.fetcher = fetcher
         self.saver = saver
         self.volumeApplicator = volumeApplicator
+        self.defaults = defaults
         loadFromDefaults()
-        setupForegroundRefresh()
     }
 
     deinit {
-#if os(iOS)
-        if let observer = foregroundObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-#endif
         saveTask?.cancel()
     }
 
-    // MARK: - Public API
-
-    func sync() async {
+    public func sync() async {
         guard let serverPrefs = try? await fetcher() else { return }
         if serverPrefs.updatedAt > updatedAt {
             apply(serverPrefs)
@@ -57,28 +46,26 @@ final class PlayerPreferencesStore {
         }
     }
 
-    func trackPlayback(station: Station) {
+    public func trackPlayback(station: Station) {
         lastItem = PlaybackItem(id: station.id, name: station.name, slug: station.slug, kind: "station")
         restoredStation = nil
         updatedAt = Date()
         scheduleSave()
     }
 
-    func updateVolume(_ newVolume: Double) {
+    public func updateVolume(_ newVolume: Double) {
         volume = max(0, min(1, newVolume))
         updatedAt = Date()
         scheduleSave()
     }
 
-    func clearPreferences() {
+    public func clearPreferences() {
         volume = 1.0
         lastItem = nil
         restoredStation = nil
         updatedAt = .distantPast
-        UserDefaults.standard.removeObject(forKey: Self.defaultsKey)
+        defaults.removeObject(forKey: Self.defaultsKey)
     }
-
-    // MARK: - Private
 
     private func apply(_ prefs: PlayerPreferences) {
         volume = prefs.volume
@@ -113,22 +100,8 @@ final class PlayerPreferencesStore {
         }
     }
 
-    private func setupForegroundRefresh() {
-#if os(iOS)
-        foregroundObserver = NotificationCenter.default.addObserver(
-            forName: UIApplication.willEnterForegroundNotification,
-            object: nil,
-            queue: nil
-        ) { [weak self] _ in
-            Task { @MainActor [weak self] in await self?.sync() }
-        }
-#endif
-    }
-
-    // MARK: - Local persistence
-
     private func loadFromDefaults() {
-        guard let data = UserDefaults.standard.data(forKey: Self.defaultsKey),
+        guard let data = defaults.data(forKey: Self.defaultsKey),
               let cached = try? JSONDecoder().decode(CachedPreferences.self, from: data)
         else { return }
         volume = cached.volume
@@ -145,8 +118,12 @@ final class PlayerPreferencesStore {
         }
         let cached = CachedPreferences(volume: volume, lastItem: cachedItem, updatedAt: updatedAt)
         if let data = try? JSONEncoder().encode(cached) {
-            UserDefaults.standard.set(data, forKey: Self.defaultsKey)
+            defaults.set(data, forKey: Self.defaultsKey)
         }
+    }
+
+    public func performSaveForTest() async {
+        await performSave()
     }
 }
 

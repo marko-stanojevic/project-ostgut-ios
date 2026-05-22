@@ -1,11 +1,16 @@
 import SinkAPI
 import SwiftUI
 
-struct StationRowView: View {
-    let station: CatalogCard
-    var isPlaying: Bool = false
+public struct StationRowView: View {
+    public let station: CatalogCard
+    public var isPlaying: Bool = false
 
-    var body: some View {
+    public init(station: CatalogCard, isPlaying: Bool = false) {
+        self.station = station
+        self.isPlaying = isPlaying
+    }
+
+    public var body: some View {
         HStack(spacing: 16) {
             stationIcon
             VStack(alignment: .leading, spacing: 4) {

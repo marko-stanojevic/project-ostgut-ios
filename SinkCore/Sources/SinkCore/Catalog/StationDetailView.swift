@@ -2,9 +2,9 @@ import SinkAPI
 import SinkPlayback
 import SwiftUI
 
-struct StationDetailView: View {
-    let stationId: String
-    let station: CatalogCard?
+public struct StationDetailView: View {
+    public let stationId: String
+    public let station: CatalogCard?
 
     @Environment(\.apiClient) private var apiClient
     @Environment(\.playbackService) private var playbackService
@@ -14,7 +14,12 @@ struct StationDetailView: View {
     @State private var errorMessage: String?
     @State private var showUpgradeSheet = false
 
-    var body: some View {
+    public init(stationId: String, station: CatalogCard?) {
+        self.stationId = stationId
+        self.station = station
+    }
+
+    public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 detailBody
@@ -22,7 +27,6 @@ struct StationDetailView: View {
             .padding()
         }
         .navigationTitle(detail?.name ?? station?.name ?? "")
-        .navigationBarLargeTitle()
         .task { await loadDetail() }
         .sheet(isPresented: $showUpgradeSheet) { UpgradeView() }
     }

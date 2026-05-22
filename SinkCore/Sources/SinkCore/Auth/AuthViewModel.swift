@@ -6,14 +6,14 @@ import SinkAPI
 /// View model shared by LoginView and SignUpView.
 @Observable
 @MainActor
-final class AuthViewModel {
-    enum State {
+public final class AuthViewModel {
+    public enum State {
         case idle
         case loading
         case error(String)
     }
 
-    var state: State = .idle
+    public var state: State = .idle
 
     private let apiClient: APIClient
     private let tokenStore: TokenStore
@@ -21,7 +21,7 @@ final class AuthViewModel {
     private let userAccessStore: UserAccessStore
     private let playerPreferencesStore: PlayerPreferencesStore
 
-    init(
+    public init(
         apiClient: APIClient,
         tokenStore: TokenStore,
         navigation: AppNavigation,
@@ -37,7 +37,7 @@ final class AuthViewModel {
 
     // MARK: - Email / Password
 
-    func login(email: String, password: String) async {
+    public func login(email: String, password: String) async {
         guard !email.isEmpty, !password.isEmpty else {
             state = .error("Email and password are required.")
             return
@@ -59,7 +59,7 @@ final class AuthViewModel {
         }
     }
 
-    func register(email: String, password: String) async {
+    public func register(email: String, password: String) async {
         guard !email.isEmpty, !password.isEmpty else {
             state = .error("Email and password are required.")
             return
@@ -82,7 +82,7 @@ final class AuthViewModel {
 
     // MARK: - Sign in with Apple
 
-    func handleAppleAuthorization(_ authorization: ASAuthorization) async {
+    public func handleAppleAuthorization(_ authorization: ASAuthorization) async {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let tokenData = credential.identityToken,
               let identityToken = String(data: tokenData, encoding: .utf8)
@@ -102,16 +102,16 @@ final class AuthViewModel {
         }
     }
 
-    func handleAppleError(_ error: Error) {
+    public func handleAppleError(_ error: Error) {
         if case ASAuthorizationError.canceled = error { return }
         state = .error("Sign in with Apple failed. Please try again.")
     }
 
-    func clearError() {
+    public func clearError() {
         if case .error = state { state = .idle }
     }
 
-    func logout() async {
+    public func logout() async {
         let refreshToken = await tokenStore.storedRefreshToken
         await tokenStore.clear()
         userAccessStore.clearAccess()

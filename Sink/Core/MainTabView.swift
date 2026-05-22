@@ -1,3 +1,4 @@
+import SinkCore
 import SwiftUI
 
 struct MainTabView: View {

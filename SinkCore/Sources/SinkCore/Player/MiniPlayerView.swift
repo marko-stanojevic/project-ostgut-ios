@@ -1,12 +1,14 @@
 import SinkPlayback
 import SwiftUI
 
-struct MiniPlayerView: View {
+public struct MiniPlayerView: View {
     @Environment(\.playbackService) private var playbackService
     @Environment(PlayerPreferencesStore.self) private var playerPreferencesStore
     @State private var showNowPlaying = false
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         if let service = playbackService {
             let displayStation = service.state.currentStation ?? playerPreferencesStore.restoredStation
             if let station = displayStation {

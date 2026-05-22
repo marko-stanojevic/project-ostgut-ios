@@ -11,12 +11,12 @@ private struct PlaybackServiceKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    var apiClient: APIClient? {
+    public var apiClient: APIClient? {
         get { self[APIClientKey.self] }
         set { self[APIClientKey.self] = newValue }
     }
 
-    var playbackService: AVPlayerPlaybackService? {
+    public var playbackService: AVPlayerPlaybackService? {
         get { self[PlaybackServiceKey.self] }
         set { self[PlaybackServiceKey.self] = newValue }
     }

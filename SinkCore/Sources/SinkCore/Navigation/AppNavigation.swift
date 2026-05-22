@@ -4,14 +4,16 @@ import SwiftUI
 ///
 /// Determines which root screen is visible: auth flow or the main app.
 @Observable
-final class AppNavigation {
-    var isAuthenticated: Bool = false
+public final class AppNavigation {
+    public var isAuthenticated: Bool = false
 
-    func signedIn() {
+    public init() {}
+
+    public func signedIn() {
         isAuthenticated = true
     }
 
-    func signedOut() {
+    public func signedOut() {
         isAuthenticated = false
     }
 }

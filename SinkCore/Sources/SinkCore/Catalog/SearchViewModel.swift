@@ -4,28 +4,28 @@ import SinkAPI
 
 @Observable
 @MainActor
-final class SearchViewModel {
-    enum LoadState: Equatable {
+public final class SearchViewModel {
+    public enum LoadState: Equatable {
         case idle
         case loading
         case loaded
         case error(String)
     }
 
-    var query: String = ""
-    private(set) var results: [CatalogCard] = []
-    private(set) var loadState: LoadState = .idle
+    public var query: String = ""
+    public private(set) var results: [CatalogCard] = []
+    public private(set) var loadState: LoadState = .idle
 
     private let apiClient: APIClient
     private let anonymousSessionStore: AnonymousSessionStore
     private var searchTask: Task<Void, Never>?
 
-    init(apiClient: APIClient, anonymousSessionStore: AnonymousSessionStore) {
+    public init(apiClient: APIClient, anonymousSessionStore: AnonymousSessionStore) {
         self.apiClient = apiClient
         self.anonymousSessionStore = anonymousSessionStore
     }
 
-    func scheduleSearch() {
+    public func scheduleSearch() {
         searchTask?.cancel()
         searchTask = Task { [weak self] in
             do {
@@ -37,7 +37,7 @@ final class SearchViewModel {
         }
     }
 
-    func search() async {
+    public func search() async {
         let trimmed = query.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else {
             results = []

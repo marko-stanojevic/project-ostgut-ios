@@ -1,13 +1,15 @@
 import SwiftUI
 
-struct SignUpView: View {
+public struct SignUpView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
     @Environment(AuthViewModel.self) private var viewModel
     @Environment(\.dismiss) private var dismiss
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         VStack(spacing: 0) {
             Spacer()
 
@@ -25,7 +27,6 @@ struct SignUpView: View {
         }
         .padding(.horizontal, 32)
         .navigationTitle("")
-        .navigationBarInlineTitle()
         .alert("Sign Up Failed", isPresented: errorBinding) {
             Button("OK") { viewModel.clearError() }
         } message: {
@@ -49,7 +50,7 @@ struct SignUpView: View {
         VStack(spacing: 16) {
             TextField("Email", text: $email)
                 .textContentType(.emailAddress)
-                .emailInputModifiers()
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding()
                 .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 12))

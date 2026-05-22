@@ -1,5 +1,4 @@
-import SinkAPI
-import SinkPlayback
+import SinkCore
 import SwiftUI
 
 @main
@@ -103,7 +102,11 @@ struct SinkApp: App {
         PlayerPreferencesStore(
             fetcher: { try await apiClient.fetchPlayerPreferences() },
             saver: { try await apiClient.updatePlayerPreferences($0) },
-            volumeApplicator: { volume in playbackService.setVolume(Float(volume)) }
+            volumeApplicator: { volume in
+                Task { @MainActor in
+                    playbackService.setVolume(Float(volume))
+                }
+            }
         )
     }
 

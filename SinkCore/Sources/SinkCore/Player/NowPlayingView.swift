@@ -1,11 +1,13 @@
 import SinkPlayback
 import SwiftUI
 
-struct NowPlayingView: View {
+public struct NowPlayingView: View {
     @Environment(\.playbackService) private var playbackService
     @Environment(\.dismiss) private var dismiss
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         if let service = playbackService {
             content(service: service)
                 .onChange(of: service.state.currentStation == nil) { _, isNil in

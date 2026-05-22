@@ -1,10 +1,12 @@
 import SwiftUI
 
-struct AccountView: View {
+public struct AccountView: View {
     @Environment(AppNavigation.self) private var navigation
     @Environment(AuthViewModel.self) private var authViewModel
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         NavigationStack {
             if navigation.isAuthenticated {
                 authenticatedContent

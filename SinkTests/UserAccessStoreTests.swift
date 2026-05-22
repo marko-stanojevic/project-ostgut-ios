@@ -1,6 +1,6 @@
 import SinkAPI
 import Testing
-@testable import Sink
+@testable import SinkCore
 
 @Suite("UserAccessStore")
 @MainActor
@@ -21,18 +21,18 @@ struct UserAccessStoreTests {
 
     // MARK: - ios_app_access
 
-    @Test("hasIOSAppAccess true when canUseIOSApp is true")
+    @Test("hasNativeAppAccess true when canUseIOSApp is true")
     func iosAppAccessGranted() async {
         let store = makeStore(capabilities: .iosAppOnly)
         await store.refresh()
-        #expect(store.hasIOSAppAccess == true)
+        #expect(store.hasNativeAppAccess == true)
     }
 
-    @Test("hasIOSAppAccess false when canUseIOSApp is false")
+    @Test("hasNativeAppAccess false when canUseIOSApp is false")
     func iosAppAccessDenied() async {
         let store = makeStore(capabilities: .none)
         await store.refresh()
-        #expect(store.hasIOSAppAccess == false)
+        #expect(store.hasNativeAppAccess == false)
     }
 
     // MARK: - browser_access / core_access
@@ -93,7 +93,7 @@ struct UserAccessStoreTests {
         await store.refresh()
         store.clearAccess()
         #expect(store.isLicensed == false)
-        #expect(store.hasIOSAppAccess == false)
+        #expect(store.hasNativeAppAccess == false)
         #expect(store.hasBrowserAccess == false)
         #expect(store.hasCoreAccess == false)
     }

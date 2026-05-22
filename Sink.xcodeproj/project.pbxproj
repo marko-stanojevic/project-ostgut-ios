@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EA62FBFB3120060419F /* SinkPlayback */; };
 		B0920EAD2FBFB3120060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EAC2FBFB3120060419F /* SinkAPI */; };
+		B0D727052FDDF768003B1CF7 /* SinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0D727042FDDF768003B1CF7 /* SinkCore */; };
+		B0D727072FDDFCC6003B1CF7 /* SinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0D727062FDDFCC6003B1CF7 /* SinkCore */; };
 		B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0A2FBFB08A0060419F /* SinkAPI */; };
 		B1920E0D2FBFB08A0060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0E2FBFB08A0060419F /* SinkPlayback */; };
 /* End PBXBuildFile section */
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0D727052FDDF768003B1CF7 /* SinkCore in Frameworks */,
 				B0920EAD2FBFB3120060419F /* SinkAPI in Frameworks */,
 				B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */,
 			);
@@ -56,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0D727072FDDFCC6003B1CF7 /* SinkCore in Frameworks */,
 				B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */,
 				B1920E0D2FBFB08A0060419F /* SinkPlayback in Frameworks */,
 			);
@@ -103,6 +107,7 @@
 			);
 			name = Sink;
 			packageProductDependencies = (
+				B0D727042FDDF768003B1CF7 /* SinkCore */,
 				B0920EAC2FBFB3120060419F /* SinkAPI */,
 				B0920EA62FBFB3120060419F /* SinkPlayback */,
 			);
@@ -128,6 +133,7 @@
 			);
 			name = SinkTests;
 			packageProductDependencies = (
+				B0D727062FDDFCC6003B1CF7 /* SinkCore */,
 				B1920E0A2FBFB08A0060419F /* SinkAPI */,
 				B1920E0E2FBFB08A0060419F /* SinkPlayback */,
 			);
@@ -164,6 +170,7 @@
 			mainGroup = B0920E592FBFB08A0060419F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				B0D727032FDDF768003B1CF7 /* XCLocalSwiftPackageReference "SinkCore" */,
 				B0920EA42FBFB2F10060419F /* XCLocalSwiftPackageReference "SinkAPI" */,
 				B0920EA52FBFB3120060419F /* XCLocalSwiftPackageReference "SinkPlayback" */,
 			);
@@ -511,6 +518,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = SinkPlayback;
 		};
+		B0D727032FDDF768003B1CF7 /* XCLocalSwiftPackageReference "SinkCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SinkCore;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -521,6 +532,14 @@
 		B0920EAC2FBFB3120060419F /* SinkAPI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SinkAPI;
+		};
+		B0D727042FDDF768003B1CF7 /* SinkCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkCore;
+		};
+		B0D727062FDDFCC6003B1CF7 /* SinkCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkCore;
 		};
 		B1920E0A2FBFB08A0060419F /* SinkAPI */ = {
 			isa = XCSwiftPackageProductDependency;
