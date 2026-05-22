@@ -33,7 +33,7 @@ struct NowPlayingView: View {
 
     private var dragHandle: some View {
         Capsule()
-            .fill(Color(.systemGray4))
+            .fill(Color.secondary.opacity(0.3))
             .frame(width: 36, height: 5)
     }
 
@@ -46,11 +46,11 @@ struct NowPlayingView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                     } else {
-                        Color(.systemGray5)
+                        Color.secondary.opacity(0.15)
                     }
                 }
             } else {
-                Color(.systemGray5)
+                Color.secondary.opacity(0.15)
             }
         }
         .frame(width: 280, height: 280)

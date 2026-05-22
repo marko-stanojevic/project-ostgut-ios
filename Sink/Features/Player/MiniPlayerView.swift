@@ -61,11 +61,11 @@ struct MiniPlayerView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                     } else {
-                        Color(.systemGray5)
+                        Color.secondary.opacity(0.15)
                     }
                 }
             } else {
-                Color(.systemGray5)
+                Color.secondary.opacity(0.15)
             }
         }
         .frame(width: 40, height: 40)

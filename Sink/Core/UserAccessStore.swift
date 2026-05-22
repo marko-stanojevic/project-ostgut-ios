@@ -20,7 +20,9 @@ final class UserAccessStore {
 
     private let fetcher: @Sendable () async throws -> UserAccess
     nonisolated(unsafe) private var periodicTask: Task<Void, Never>?
+#if os(iOS)
     nonisolated(unsafe) private var foregroundObserver: (any NSObjectProtocol)?
+#endif
 
     init(fetcher: @escaping @Sendable () async throws -> UserAccess) {
         self.fetcher = fetcher
@@ -29,9 +31,11 @@ final class UserAccessStore {
     }
 
     deinit {
+#if os(iOS)
         if let observer = foregroundObserver {
             NotificationCenter.default.removeObserver(observer)
         }
+#endif
         periodicTask?.cancel()
     }
 

@@ -25,7 +25,7 @@ struct SignUpView: View {
         }
         .padding(.horizontal, 32)
         .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarInlineTitle()
         .alert("Sign Up Failed", isPresented: errorBinding) {
             Button("OK") { viewModel.clearError() }
         } message: {
@@ -49,9 +49,8 @@ struct SignUpView: View {
         VStack(spacing: 16) {
             TextField("Email", text: $email)
                 .textContentType(.emailAddress)
-                .keyboardType(.emailAddress)
+                .emailInputModifiers()
                 .autocorrectionDisabled()
-                .textInputAutocapitalization(.never)
                 .padding()
                 .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 12))
 

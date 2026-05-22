@@ -22,7 +22,7 @@ struct StationDetailView: View {
             .padding()
         }
         .navigationTitle(detail?.name ?? station?.name ?? "")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarLargeTitle()
         .task { await loadDetail() }
         .sheet(isPresented: $showUpgradeSheet) { UpgradeView() }
     }
@@ -78,11 +78,11 @@ struct StationDetailView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                         } else {
-                            Color(.systemGray5)
+                            Color.secondary.opacity(0.15)
                         }
                     }
                 } else {
-                    Color(.systemGray5)
+                    Color.secondary.opacity(0.15)
                 }
             }
             .frame(width: 80, height: 80)
@@ -109,7 +109,7 @@ struct StationDetailView: View {
                         .font(.caption)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .background(Color(.systemGray5))
+                        .background(Color.secondary.opacity(0.15))
                         .clipShape(Capsule())
                 }
             }
@@ -143,7 +143,7 @@ struct StationDetailView: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
-        .tint(isCurrentStation ? Color(.systemGray3) : .accentColor)
+        .tint(isCurrentStation ? Color.secondary : .accentColor)
     }
 
     private func loadDetail() async {

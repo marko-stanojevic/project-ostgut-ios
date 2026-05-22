@@ -66,6 +66,6 @@ struct StationRowView: View {
     }
 
     private var iconPlaceholder: some View {
-        Color(.systemGray5)
+        Color.secondary.opacity(0.15)
     }
 }

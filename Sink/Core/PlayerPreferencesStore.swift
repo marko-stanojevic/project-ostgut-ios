@@ -20,7 +20,9 @@ final class PlayerPreferencesStore {
     private let volumeApplicator: (@Sendable (Double) -> Void)?
 
     nonisolated(unsafe) private var saveTask: Task<Void, Never>?
+#if os(iOS)
     nonisolated(unsafe) private var foregroundObserver: (any NSObjectProtocol)?
+#endif
 
     private static let defaultsKey = "fm.sink.playerPreferences"
 
@@ -37,9 +39,11 @@ final class PlayerPreferencesStore {
     }
 
     deinit {
+#if os(iOS)
         if let observer = foregroundObserver {
             NotificationCenter.default.removeObserver(observer)
         }
+#endif
         saveTask?.cancel()
     }
 
