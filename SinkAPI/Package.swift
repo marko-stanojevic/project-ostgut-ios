@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "SinkAPI",
-    platforms: [.iOS(.v17), .macOS(.v10_15)],
+    platforms: [.iOS(.v17), .macOS(.v13)],
     products: [
         .library(name: "SinkAPI", targets: ["SinkAPI"]),
     ],
