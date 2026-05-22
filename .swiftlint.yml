@@ -1,5 +1,6 @@
 included:
   - Sink
+  - SinkMac
   - SinkAPI/Sources
   - SinkPlayback/Sources
 

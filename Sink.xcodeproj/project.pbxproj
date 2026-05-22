@@ -13,6 +13,9 @@
 		B0D727072FDDFCC6003B1CF7 /* SinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = B0D727062FDDFCC6003B1CF7 /* SinkCore */; };
 		B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0A2FBFB08A0060419F /* SinkAPI */; };
 		B1920E0D2FBFB08A0060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0E2FBFB08A0060419F /* SinkPlayback */; };
+		B4A1C0012FE1001000A1B2C3 /* SinkCore in Frameworks */ = {isa = PBXBuildFile; productRef = B4A1C0112FE1001000A1B2C3 /* SinkCore */; };
+		B4A1C0022FE1001000A1B2C3 /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B4A1C0122FE1001000A1B2C3 /* SinkAPI */; };
+		B4A1C0032FE1001000A1B2C3 /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B4A1C0132FE1001000A1B2C3 /* SinkPlayback */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +32,9 @@
 		B0920E622FBFB08A0060419F /* Sink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1920E012FBFB08A0060419F /* SinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1920E0C2FBFB08A0060419F /* Sink.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sink.xctestplan; sourceTree = "<group>"; };
+		B4A1C0142FE1001000A1B2C3 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SinkMac/Config/Debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		B4A1C0152FE1001000A1B2C3 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SinkMac/Config/Release.xcconfig; sourceTree = SOURCE_ROOT; };
+		B4A1C0162FE1001000A1B2C3 /* SinkMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SinkMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,6 +46,11 @@
 		B1920E022FBFB08A0060419F /* SinkTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SinkTests;
+			sourceTree = "<group>";
+		};
+		B4A1C0172FE1001000A1B2C3 /* SinkMac */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SinkMac;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -65,6 +76,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B4A1C0052FE1001000A1B2C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4A1C0012FE1001000A1B2C3 /* SinkCore in Frameworks */,
+				B4A1C0022FE1001000A1B2C3 /* SinkAPI in Frameworks */,
+				B4A1C0032FE1001000A1B2C3 /* SinkPlayback in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -72,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				B0920E642FBFB08A0060419F /* Sink */,
+				B4A1C0172FE1001000A1B2C3 /* SinkMac */,
 				B1920E022FBFB08A0060419F /* SinkTests */,
 				B1920E0C2FBFB08A0060419F /* Sink.xctestplan */,
 				B0920E632FBFB08A0060419F /* Products */,
@@ -82,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				B0920E622FBFB08A0060419F /* Sink.app */,
+				B4A1C0162FE1001000A1B2C3 /* SinkMac.app */,
 				B1920E012FBFB08A0060419F /* SinkTests.xctest */,
 			);
 			name = Products;
@@ -141,6 +164,31 @@
 			productReference = B1920E012FBFB08A0060419F /* SinkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B4A1C0042FE1001000A1B2C3 /* SinkMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B4A1C00E2FE1001000A1B2C3 /* Build configuration list for PBXNativeTarget "SinkMac" */;
+			buildPhases = (
+				B4A1C0062FE1001000A1B2C3 /* Sources */,
+				B4A1C0052FE1001000A1B2C3 /* Frameworks */,
+				B4A1C0072FE1001000A1B2C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B4A1C0172FE1001000A1B2C3 /* SinkMac */,
+			);
+			name = SinkMac;
+			packageProductDependencies = (
+				B4A1C0112FE1001000A1B2C3 /* SinkCore */,
+				B4A1C0122FE1001000A1B2C3 /* SinkAPI */,
+				B4A1C0132FE1001000A1B2C3 /* SinkPlayback */,
+			);
+			productName = SinkMac;
+			productReference = B4A1C0162FE1001000A1B2C3 /* SinkMac.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -157,6 +205,9 @@
 					B1920E062FBFB08A0060419F = {
 						CreatedOnToolsVersion = 26.5;
 						TestTargetID = B0920E612FBFB08A0060419F;
+					};
+					B4A1C0042FE1001000A1B2C3 = {
+						CreatedOnToolsVersion = 26.5;
 					};
 				};
 			};
@@ -180,6 +231,7 @@
 			projectRoot = "";
 			targets = (
 				B0920E612FBFB08A0060419F /* Sink */,
+				B4A1C0042FE1001000A1B2C3 /* SinkMac */,
 				B1920E062FBFB08A0060419F /* SinkTests */,
 			);
 		};
@@ -200,6 +252,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B4A1C0072FE1001000A1B2C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -211,6 +270,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B1920E032FBFB08A0060419F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4A1C0062FE1001000A1B2C3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -477,6 +543,72 @@
 			};
 			name = Release;
 		};
+		B4A1C0082FE1001000A1B2C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B4A1C0142FE1001000A1B2C3 /* Debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SINK;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sinkfm.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		B4A1C0092FE1001000A1B2C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B4A1C0152FE1001000A1B2C3 /* Release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = SINK;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sinkfm.mac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -503,6 +635,15 @@
 			buildConfigurations = (
 				B1920E072FBFB08A0060419F /* Debug */,
 				B1920E082FBFB08A0060419F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B4A1C00E2FE1001000A1B2C3 /* Build configuration list for PBXNativeTarget "SinkMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4A1C0082FE1001000A1B2C3 /* Debug */,
+				B4A1C0092FE1001000A1B2C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -546,6 +687,18 @@
 			productName = SinkAPI;
 		};
 		B1920E0E2FBFB08A0060419F /* SinkPlayback */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkPlayback;
+		};
+		B4A1C0112FE1001000A1B2C3 /* SinkCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkCore;
+		};
+		B4A1C0122FE1001000A1B2C3 /* SinkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkAPI;
+		};
+		B4A1C0132FE1001000A1B2C3 /* SinkPlayback */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SinkPlayback;
 		};

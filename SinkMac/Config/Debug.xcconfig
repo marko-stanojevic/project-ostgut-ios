@@ -1,0 +1,4 @@
+// Debug configuration overrides.
+// Set API_BASE_URL to your local backend.
+API_BASE_URL = http://localhost:8080
+MACOSX_DEPLOYMENT_TARGET = 14.0

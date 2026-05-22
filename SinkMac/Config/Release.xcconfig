@@ -1,0 +1,3 @@
+// Release configuration overrides.
+API_BASE_URL = https://api.sink.fm
+MACOSX_DEPLOYMENT_TARGET = 14.0

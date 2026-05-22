@@ -58,15 +58,14 @@ public struct LoginView: View {
         VStack(spacing: 16) {
             TextField("Email", text: $email)
                 .textContentType(.emailAddress)
-                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .padding()
-                .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 12))
+                .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
 
             SecureField("Password", text: $password)
                 .textContentType(.password)
                 .padding()
-                .background(.fill.tertiary, in: RoundedRectangle(cornerRadius: 12))
+                .background(Color.secondary.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
 
             Button {
                 Task { await viewModel.login(email: email, password: password) }
