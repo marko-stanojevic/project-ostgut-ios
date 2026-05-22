@@ -37,8 +37,10 @@ public final class AVPlayerPlaybackService: PlaybackService {
         reResolveTask = nil
         state = .loading
 
+#if os(iOS)
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
         try? AVAudioSession.sharedInstance().setActive(true)
+#endif
 
         let token: PlaybackToken
         do {
@@ -87,7 +89,9 @@ public final class AVPlayerPlaybackService: PlaybackService {
         agcEngine.stop()
         nowPlayingMetadata = nil
         player.replaceCurrentItem(with: nil)
+#if os(iOS)
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+#endif
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
         state = .idle
     }
@@ -111,6 +115,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
     }
 
     private func setupInterruptionHandling() {
+#if os(iOS)
         interruptionObserver = NotificationCenter.default.addObserver(
             forName: AVAudioSession.interruptionNotification,
             object: nil,
@@ -120,6 +125,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
                 self?.handleInterruption(notification)
             }
         }
+#endif
     }
 
     deinit {
@@ -129,6 +135,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
     }
 
     func handleInterruption(_ notification: Notification) {
+#if os(iOS)
         guard
             let typeValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
             let type = AVAudioSession.InterruptionType(rawValue: typeValue)
@@ -148,6 +155,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
         @unknown default:
             break
         }
+#endif
     }
 
     private func startPolling(station: Station) {
