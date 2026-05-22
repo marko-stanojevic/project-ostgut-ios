@@ -10,7 +10,11 @@ let package = Package(
     targets: [
         .target(
             name: "SinkPlayback",
-            dependencies: []
+            dependencies: [],
+            linkerSettings: [
+                .linkedFramework("MediaToolbox"),
+                .linkedFramework("Accelerate")
+            ]
         ),
         .testTarget(
             name: "SinkPlaybackTests",

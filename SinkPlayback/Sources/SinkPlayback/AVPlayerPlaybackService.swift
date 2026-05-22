@@ -14,6 +14,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
     private let nowPlayingResolver: (@Sendable (String) async throws -> NowPlayingMetadata?)?
     private var reResolveTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
+    private let agcEngine = AGCEngine()
     // Stored so the observer can be removed in deinit, preventing stale observers in tests.
     nonisolated(unsafe) private var interruptionObserver: (any NSObjectProtocol)?
 
@@ -47,7 +48,9 @@ public final class AVPlayerPlaybackService: PlaybackService {
             throw error
         }
 
-        player.replaceCurrentItem(with: AVPlayerItem(url: token.url))
+        let item = AVPlayerItem(url: token.url)
+        agcEngine.start(playerItem: item, stationID: station.id)
+        player.replaceCurrentItem(with: item)
         player.play()
         state = .playing(station: station)
         updateNowPlaying(station: station)
@@ -60,10 +63,14 @@ public final class AVPlayerPlaybackService: PlaybackService {
         player.pause()
         state = .paused(station: station)
         stopPolling()
+        agcEngine.stop()
     }
 
     public func resume() {
         guard case .paused(let station) = state else { return }
+        if let item = player.currentItem {
+            agcEngine.start(playerItem: item, stationID: station.id)
+        }
         player.play()
         state = .playing(station: station)
         startPolling(station: station)
@@ -77,6 +84,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
         reResolveTask?.cancel()
         reResolveTask = nil
         stopPolling()
+        agcEngine.stop()
         nowPlayingMetadata = nil
         player.replaceCurrentItem(with: nil)
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
