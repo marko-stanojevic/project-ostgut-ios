@@ -139,9 +139,10 @@ struct AVPlayerPlaybackServiceTests {
                 AVAudioSessionInterruptionOptionKey: AVAudioSession.InterruptionOptions.shouldResume.rawValue
             ]
         )
-        NotificationCenter.default.post(notification)
+        // Call directly to avoid non-determinism from shared NotificationCenter.
+        service.handleInterruption(notification)
 
-        // Allow the Task spawned by the notification handler to execute.
+        // Allow the Task spawned by shouldResume to call play().
         try await Task.sleep(for: .milliseconds(200))
 
         guard case .playing = service.state else {
@@ -162,9 +163,8 @@ struct AVPlayerPlaybackServiceTests {
             object: nil,
             userInfo: [AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.began.rawValue]
         )
-        NotificationCenter.default.post(notification)
-
-        try await Task.sleep(for: .milliseconds(100))
+        // handleInterruption is synchronous @MainActor — no sleep needed.
+        service.handleInterruption(notification)
 
         guard case .paused = service.state else {
             Issue.record("Expected .paused after interruption began")

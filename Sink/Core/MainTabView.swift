@@ -10,5 +10,8 @@ struct MainTabView: View {
             AccountView()
                 .tabItem { Label("Account", systemImage: "person") }
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            MiniPlayerView()
+        }
     }
 }

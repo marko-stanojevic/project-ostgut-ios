@@ -1,4 +1,5 @@
 import SinkAPI
+import SinkPlayback
 import SwiftUI
 
 struct StationDetailView: View {
@@ -6,6 +7,7 @@ struct StationDetailView: View {
     let station: CatalogCard?
 
     @Environment(\.apiClient) private var apiClient
+    @Environment(\.playbackService) private var playbackService
     @State private var detail: CatalogDetail?
     @State private var errorMessage: String?
 
@@ -39,7 +41,7 @@ struct StationDetailView: View {
                     .foregroundStyle(.secondary)
             }
             tagScrollRow(tags: detail.genreTags + detail.formatTags)
-            playButton
+            playButton(for: detail)
         } else if let station {
             stationHeader(name: station.name, icon: station.icon)
             tagScrollRow(tags: station.genreTags)
@@ -110,14 +112,30 @@ struct StationDetailView: View {
         }
     }
 
-    private var playButton: some View {
-        Button {
-            // Playback wired in ios-10
+    private func playButton(for detail: CatalogDetail) -> some View {
+        let isCurrentStation = playbackService?.state.currentStation?.id == stationId
+        return Button {
+            guard let service = playbackService else { return }
+            if isCurrentStation {
+                service.stop()
+            } else {
+                let playStation = Station(
+                    id: detail.id,
+                    name: detail.name,
+                    slug: detail.slug,
+                    iconURL: detail.icon.flatMap { URL(string: $0.url) }
+                )
+                Task { try? await service.play(station: playStation) }
+            }
         } label: {
-            Label("Play", systemImage: "play.fill")
-                .frame(maxWidth: .infinity)
+            Label(
+                isCurrentStation ? "Stop" : "Play",
+                systemImage: isCurrentStation ? "stop.fill" : "play.fill"
+            )
+            .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
+        .tint(isCurrentStation ? Color(.systemGray3) : .accentColor)
     }
 
     private func loadDetail() async {

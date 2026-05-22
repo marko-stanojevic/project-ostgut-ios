@@ -1,8 +1,10 @@
 import SinkAPI
+import SinkPlayback
 import SwiftUI
 
 struct SearchView: View {
     @Environment(SearchViewModel.self) private var viewModel
+    @Environment(\.playbackService) private var playbackService
 
     var body: some View {
         NavigationStack {
@@ -46,7 +48,10 @@ struct SearchView: View {
         List {
             ForEach(viewModel.results) { station in
                 NavigationLink(value: station.id) {
-                    StationRowView(station: station)
+                    StationRowView(
+                        station: station,
+                        isPlaying: playbackService?.state.currentStation?.id == station.id
+                    )
                 }
             }
         }

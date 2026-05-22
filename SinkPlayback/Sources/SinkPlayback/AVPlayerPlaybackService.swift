@@ -10,6 +10,8 @@ public final class AVPlayerPlaybackService: PlaybackService {
     let player: AVPlayer
     private let playbackURLResolver: @Sendable (String) async throws -> PlaybackToken
     private var reResolveTask: Task<Void, Never>?
+    // Stored so the observer can be removed in deinit, preventing stale observers in tests.
+    nonisolated(unsafe) private var interruptionObserver: (any NSObjectProtocol)?
 
     public init(
         playbackURLResolver: @escaping @Sendable (String) async throws -> PlaybackToken,
@@ -86,7 +88,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
     }
 
     private func setupInterruptionHandling() {
-        NotificationCenter.default.addObserver(
+        interruptionObserver = NotificationCenter.default.addObserver(
             forName: AVAudioSession.interruptionNotification,
             object: nil,
             queue: nil
@@ -97,7 +99,13 @@ public final class AVPlayerPlaybackService: PlaybackService {
         }
     }
 
-    private func handleInterruption(_ notification: Notification) {
+    deinit {
+        if let observer = interruptionObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    func handleInterruption(_ notification: Notification) {
         guard
             let typeValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
             let type = AVAudioSession.InterruptionType(rawValue: typeValue)
@@ -112,7 +120,7 @@ public final class AVPlayerPlaybackService: PlaybackService {
             let optionsValue = (notification.userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt) ?? 0
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             if options.contains(.shouldResume), case .paused(let station) = state {
-                Task { try? await play(station: station) }
+                Task { [weak self] in try? await self?.play(station: station) }
             }
         @unknown default:
             break
@@ -130,9 +138,9 @@ public final class AVPlayerPlaybackService: PlaybackService {
         let interval = expiresAt.timeIntervalSinceNow - 30
         guard interval > 0 else { return }
 
-        reResolveTask = Task {
+        reResolveTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(interval))
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled, let self else { return }
             guard case .playing(let current) = state, current.id == station.id else { return }
             guard let newToken = try? await playbackURLResolver(station.id) else { return }
             player.replaceCurrentItem(with: AVPlayerItem(url: newToken.url))

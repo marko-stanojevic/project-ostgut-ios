@@ -3,6 +3,7 @@ import SwiftUI
 
 struct StationRowView: View {
     let station: CatalogCard
+    var isPlaying: Bool = false
 
     var body: some View {
         HStack(spacing: 16) {
@@ -12,6 +13,7 @@ struct StationRowView: View {
                     .font(.body)
                     .fontWeight(.medium)
                     .lineLimit(1)
+                    .foregroundStyle(isPlaying ? Color.accentColor : Color.primary)
                 HStack(spacing: 6) {
                     Text(station.country)
                         .font(.caption)
@@ -27,10 +29,17 @@ struct StationRowView: View {
                 }
             }
             Spacer()
-            if station.staffPick {
-                Image(systemName: "star.fill")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            HStack(spacing: 8) {
+                if isPlaying {
+                    Image(systemName: "waveform")
+                        .font(.caption)
+                        .foregroundStyle(.tint)
+                }
+                if station.staffPick {
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.vertical, 4)

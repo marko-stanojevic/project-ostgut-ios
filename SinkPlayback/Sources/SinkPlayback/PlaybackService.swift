@@ -5,11 +5,13 @@ public struct Station: Sendable {
     public let id: String
     public let name: String
     public let slug: String
+    public let iconURL: URL?
 
-    public init(id: String, name: String, slug: String) {
+    public init(id: String, name: String, slug: String, iconURL: URL? = nil) {
         self.id = id
         self.name = name
         self.slug = slug
+        self.iconURL = iconURL
     }
 }
 
@@ -20,6 +22,22 @@ public enum PlaybackState: Sendable {
     case playing(station: Station)
     case paused(station: Station)
     case error(station: Station, underlyingError: Error)
+}
+
+public extension PlaybackState {
+    /// The station associated with the current state, or `nil` when idle or loading.
+    var currentStation: Station? {
+        switch self {
+        case .playing(let station), .paused(let station): station
+        default: nil
+        }
+    }
+
+    /// `true` while a stream is actively playing (not paused, not loading).
+    var isPlaying: Bool {
+        if case .playing = self { return true }
+        return false
+    }
 }
 
 /// The single contract for all playback operations.
