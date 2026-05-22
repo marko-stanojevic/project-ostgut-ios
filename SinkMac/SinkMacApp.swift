@@ -66,18 +66,17 @@ struct SinkMacApp: App {
 
     var body: some Scene {
         Window("SINK", id: "main") {
-            MacRootView()
-                .environment(navigation)
-                .environment(authViewModel)
-                .environment(catalogViewModel)
-                .environment(searchViewModel)
-                .environment(userAccessStore)
-                .environment(playerPreferencesStore)
-                .environment(\.apiClient, apiClient)
-                .environment(\.playbackService, playbackService)
+            injectSharedEnvironment(into: MacRootView())
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified)
+
+        MenuBarExtra {
+            injectSharedEnvironment(into: MenuBarPlayerView())
+        } label: {
+            injectSharedEnvironment(into: MenuBarIconView())
+        }
+        .menuBarExtraStyle(.window)
     }
 
     private static func makePlaybackService(apiClient: APIClient) -> AVPlayerPlaybackService {
@@ -130,5 +129,17 @@ struct SinkMacApp: App {
             await userAccessStore.refresh()
             await playerPreferencesStore.sync()
         }
+    }
+
+    private func injectSharedEnvironment<Content: View>(into view: Content) -> some View {
+        view
+            .environment(navigation)
+            .environment(authViewModel)
+            .environment(catalogViewModel)
+            .environment(searchViewModel)
+            .environment(userAccessStore)
+            .environment(playerPreferencesStore)
+            .environment(\.apiClient, apiClient)
+            .environment(\.playbackService, playbackService)
     }
 }

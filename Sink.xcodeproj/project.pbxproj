@@ -32,8 +32,8 @@
 		B0920E622FBFB08A0060419F /* Sink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1920E012FBFB08A0060419F /* SinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1920E0C2FBFB08A0060419F /* Sink.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sink.xctestplan; sourceTree = "<group>"; };
-		B4A1C0142FE1001000A1B2C3 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SinkMac/Config/Debug.xcconfig; sourceTree = SOURCE_ROOT; };
-		B4A1C0152FE1001000A1B2C3 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SinkMac/Config/Release.xcconfig; sourceTree = SOURCE_ROOT; };
+		B4A1C0142FE1001000A1B2C3 /* SinkMac/Config/Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SinkMac/Config/Debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		B4A1C0152FE1001000A1B2C3 /* SinkMac/Config/Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = SinkMac/Config/Release.xcconfig; sourceTree = SOURCE_ROOT; };
 		B4A1C0162FE1001000A1B2C3 /* SinkMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SinkMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -97,6 +97,7 @@
 				B1920E022FBFB08A0060419F /* SinkTests */,
 				B1920E0C2FBFB08A0060419F /* Sink.xctestplan */,
 				B0920E632FBFB08A0060419F /* Products */,
+				B09215722FC1175B0060419F /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,6 +109,15 @@
 				B1920E012FBFB08A0060419F /* SinkTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B09215722FC1175B0060419F /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				B4A1C0142FE1001000A1B2C3 /* SinkMac/Config/Debug.xcconfig */,
+				B4A1C0152FE1001000A1B2C3 /* SinkMac/Config/Release.xcconfig */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -545,7 +555,7 @@
 		};
 		B4A1C0082FE1001000A1B2C3 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4A1C0142FE1001000A1B2C3 /* Debug.xcconfig */;
+			baseConfigurationReference = B4A1C0142FE1001000A1B2C3 /* SinkMac/Config/Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -578,7 +588,7 @@
 		};
 		B4A1C0092FE1001000A1B2C3 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B4A1C0152FE1001000A1B2C3 /* Release.xcconfig */;
+			baseConfigurationReference = B4A1C0152FE1001000A1B2C3 /* SinkMac/Config/Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
