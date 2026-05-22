@@ -23,14 +23,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXTargetDependency section */
-		B2920E022FBFB08A0060419F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B0920E612FBFB08A0060419F /* Sink */;
-			targetProxy = B2920E012FBFB08A0060419F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXFileReference section */
 		B0920E622FBFB08A0060419F /* Sink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sink.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1920E012FBFB08A0060419F /* SinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -219,6 +211,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B2920E022FBFB08A0060419F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0920E612FBFB08A0060419F /* Sink */;
+			targetProxy = B2920E012FBFB08A0060419F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		B0920E6B2FBFB08C0060419F /* Debug */ = {

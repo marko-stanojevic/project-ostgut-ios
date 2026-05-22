@@ -69,6 +69,10 @@ public final class AVPlayerPlaybackService: PlaybackService {
         startPolling(station: station)
     }
 
+    public func setVolume(_ volume: Float) {
+        player.volume = volume
+    }
+
     public func stop() {
         reResolveTask?.cancel()
         reResolveTask = nil

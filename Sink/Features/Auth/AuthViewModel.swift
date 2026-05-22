@@ -18,17 +18,20 @@ final class AuthViewModel {
     private let tokenStore: TokenStore
     private let navigation: AppNavigation
     private let userAccessStore: UserAccessStore
+    private let playerPreferencesStore: PlayerPreferencesStore
 
     init(
         apiClient: APIClient,
         tokenStore: TokenStore,
         navigation: AppNavigation,
-        userAccessStore: UserAccessStore
+        userAccessStore: UserAccessStore,
+        playerPreferencesStore: PlayerPreferencesStore
     ) {
         self.apiClient = apiClient
         self.tokenStore = tokenStore
         self.navigation = navigation
         self.userAccessStore = userAccessStore
+        self.playerPreferencesStore = playerPreferencesStore
     }
 
     // MARK: - Email / Password
@@ -46,6 +49,7 @@ final class AuthViewModel {
                 await tokenStore.store(tokens)
                 navigation.signedIn()
                 await userAccessStore.refresh()
+                await playerPreferencesStore.sync()
             case .mfaRequired:
                 state = .error("MFA is required. Please sign in via the web app to complete setup.")
             }
@@ -69,6 +73,7 @@ final class AuthViewModel {
             await tokenStore.store(tokens)
             navigation.signedIn()
             await userAccessStore.refresh()
+            await playerPreferencesStore.sync()
         } catch {
             state = .error(friendlyMessage(for: error))
         }
@@ -90,6 +95,7 @@ final class AuthViewModel {
             await tokenStore.store(tokens)
             navigation.signedIn()
             await userAccessStore.refresh()
+            await playerPreferencesStore.sync()
         } catch {
             state = .error(friendlyMessage(for: error))
         }
@@ -108,6 +114,7 @@ final class AuthViewModel {
         let refreshToken = await tokenStore.storedRefreshToken
         await tokenStore.clear()
         userAccessStore.clearAccess()
+        playerPreferencesStore.clearPreferences()
         navigation.signedOut()
         if let token = refreshToken {
             try? await apiClient.logout(refreshToken: token)

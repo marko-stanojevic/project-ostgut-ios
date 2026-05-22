@@ -156,7 +156,7 @@ public struct AnonymousSessionToken: Sendable {
 
 // MARK: - Internal decoders
 
-private let iso8601d = ISO8601DateFormatter()
+let iso8601d = ISO8601DateFormatter()
 
 // Decodes JSON responses with snake_case → camelCase key conversion.
 let catalogJSONDecoder: JSONDecoder = {

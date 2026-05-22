@@ -9,6 +9,7 @@ struct StationDetailView: View {
     @Environment(\.apiClient) private var apiClient
     @Environment(\.playbackService) private var playbackService
     @Environment(UserAccessStore.self) private var userAccessStore
+    @Environment(PlayerPreferencesStore.self) private var playerPreferencesStore
     @State private var detail: CatalogDetail?
     @State private var errorMessage: String?
     @State private var showUpgradeSheet = false
@@ -129,6 +130,7 @@ struct StationDetailView: View {
                     slug: detail.slug,
                     iconURL: detail.icon.flatMap { URL(string: $0.url) }
                 )
+                playerPreferencesStore.trackPlayback(station: playStation)
                 Task { try? await service.play(station: playStation) }
             } else {
                 showUpgradeSheet = true
