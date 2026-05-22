@@ -31,9 +31,17 @@ Native iOS app for the SINK curated radio platform (sink.fm).
 
 ## API spec sync
 
-When the backend API spec changes, an automated PR is opened in this repo by the `spec-sync.yml` workflow. Review the diff and merge — the next build regenerates the client automatically.
+When the backend API spec changes on `main`, the backend CI automatically opens a PR in this repo with the updated `SinkAPI/Sources/SinkAPI/openapi.yaml`. Review the diff and merge — the next build regenerates the client. Breaking changes surface as compile errors.
 
-To set up the dispatch token: add a GitHub fine-grained PAT with `contents: write` on this repo to the web monorepo as the `SINKFM_IOS_DISPATCH_TOKEN` secret.
+### One-time token setup
+
+Create a single GitHub fine-grained PAT with:
+- **`contents: write`** on `project-ostgut-ios` (allows the backend CI to dispatch here)
+- **`contents: read`** on `project-ostgut` (allows this repo's workflow to fetch the spec)
+
+Add it in two places:
+1. `project-ostgut` repo → Settings → Secrets → **`OSTGUT_IOS_DISPATCH_TOKEN`**
+2. `project-ostgut-ios` repo → Settings → Secrets → **`OSTGUT_IOS_DISPATCH_TOKEN`**
 
 ## CI
 

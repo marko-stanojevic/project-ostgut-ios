@@ -1,0 +1,65 @@
+name: Spec Sync
+
+# Triggered by the backend CI when backend/docs/openapi3.yaml changes on main.
+# Fetches the updated spec, commits it to a branch, and opens a PR.
+#
+# Required secret in this repo:
+#   OSTGUT_IOS_DISPATCH_TOKEN — same PAT used by the backend to dispatch here;
+#   must also have contents: read on project-ostgut to fetch the spec.
+
+on:
+  repository_dispatch:
+    types: [openapi-spec-updated]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Update openapi.yaml and open PR
+    runs-on: [self-hosted, macos]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch updated spec from backend
+        env:
+          READ_TOKEN: ${{ secrets.OSTGUT_IOS_DISPATCH_TOKEN }}
+          SHA: ${{ github.event.client_payload.sha }}
+        run: |
+          curl -fsSL \
+            -H "Authorization: Bearer $READ_TOKEN" \
+            "https://raw.githubusercontent.com/marko-stanojevic/project-ostgut/${SHA}/backend/docs/openapi3.yaml" \
+            -o SinkAPI/Sources/SinkAPI/openapi.yaml
+
+      - name: Create branch, commit, and open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.client_payload.sha }}
+        run: |
+          short_sha="${SHA:0:7}"
+          branch="spec-sync/${short_sha}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add SinkAPI/Sources/SinkAPI/openapi.yaml
+
+          if git diff --staged --quiet; then
+            echo "openapi.yaml is unchanged — nothing to sync"
+            exit 0
+          fi
+
+          git commit -m "chore(spec): sync openapi.yaml from backend ${short_sha}"
+          git push origin "$branch"
+
+          gh pr create \
+            --title "chore(spec): sync openapi.yaml from backend ${short_sha}" \
+            --body "Automated spec update from backend commit \`${SHA}\`.
+
+Review the diff to confirm new or changed endpoints are expected.
+Merge to regenerate the \`SinkAPI\` client — breaking changes will surface as compile errors on the next build." \
+            --base main \
+            --head "$branch"
