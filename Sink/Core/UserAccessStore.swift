@@ -1,5 +1,7 @@
 import SinkAPI
+#if os(iOS)
 import UIKit
+#endif
 
 @Observable
 @MainActor
@@ -44,6 +46,7 @@ final class UserAccessStore {
     // MARK: - Private
 
     private func setupForegroundRefresh() {
+#if os(iOS)
         foregroundObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
@@ -51,6 +54,7 @@ final class UserAccessStore {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in await self?.refresh() }
         }
+#endif
     }
 
     private func startPeriodicRefresh() {

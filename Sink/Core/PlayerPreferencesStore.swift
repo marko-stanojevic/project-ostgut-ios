@@ -1,6 +1,8 @@
 import SinkAPI
 import SinkPlayback
+#if os(iOS)
 import UIKit
+#endif
 
 @Observable
 @MainActor
@@ -106,6 +108,7 @@ final class PlayerPreferencesStore {
     }
 
     private func setupForegroundRefresh() {
+#if os(iOS)
         foregroundObserver = NotificationCenter.default.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
@@ -113,6 +116,7 @@ final class PlayerPreferencesStore {
         ) { [weak self] _ in
             Task { @MainActor [weak self] in await self?.sync() }
         }
+#endif
     }
 
     // MARK: - Local persistence
