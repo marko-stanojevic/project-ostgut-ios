@@ -9,8 +9,8 @@ The SINK iOS app is the native companion to the SINK radio platform (sink.fm, in
 Before reporting any item as complete, build the scheme and run tests:
 
 ```bash
-xcodebuild build-for-testing -scheme Sink -destination "platform=iOS Simulator,name=iPhone 16" | xcpretty
-xcodebuild test -scheme Sink -destination "platform=iOS Simulator,name=iPhone 16" | xcpretty
+xcodebuild build-for-testing -scheme Sink -destination "platform=iOS Simulator,name=iPhone 17" -skipPackagePluginValidation | xcpretty
+xcodebuild test -scheme Sink -destination "platform=iOS Simulator,name=iPhone 17" -skipPackagePluginValidation | xcpretty
 swiftlint --strict
 ```
 

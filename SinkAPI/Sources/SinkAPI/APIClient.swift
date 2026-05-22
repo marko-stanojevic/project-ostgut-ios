@@ -1,4 +1,5 @@
 import Foundation
+import HTTPTypes
 import OpenAPIRuntime
 import OpenAPIURLSession
 
@@ -8,28 +9,34 @@ import OpenAPIURLSession
 /// `tokenProvider` closure that returns the current access token; for
 /// unauthenticated contexts pass `{ "" }` and no Authorization header
 /// is sent.
-///
-/// Usage (authenticated):
-/// ```swift
-/// let api = APIClient(serverURL: serverURL) {
-///     try await tokenStore.accessToken()
-/// }
-/// let response = try await api.client.getV1Catalog(.init())
-/// ```
 public final class APIClient: Sendable {
-    public let client: Client
+    // The generated Client is internal to SinkAPI; app code uses APIClient methods instead.
+    let client: Client
     public let serverURL: URL
+    let tokenProvider: @Sendable () async throws -> String
 
     public init(
         serverURL: URL,
         tokenProvider: @escaping @Sendable () async throws -> String
     ) {
         self.serverURL = serverURL
+        self.tokenProvider = tokenProvider
         client = Client(
             serverURL: serverURL,
             transport: URLSessionTransport(),
             middlewares: [BearerAuthMiddleware(tokenProvider: tokenProvider)]
         )
+    }
+
+    /// Applies auth headers to a mutable URLRequest.
+    /// Injects Bearer token when one is available; falls back to anonymous session token.
+    func authorizeRequest(_ request: inout URLRequest, anonymousSessionToken: String?) async {
+        let token = (try? await tokenProvider()) ?? ""
+        if !token.isEmpty {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        } else if let anonToken = anonymousSessionToken {
+            request.setValue(anonToken, forHTTPHeaderField: "X-Anonymous-Session")
+        }
     }
 }
 

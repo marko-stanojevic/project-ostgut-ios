@@ -95,8 +95,8 @@ public actor TokenStore {
         storedAccessToken = keychainRead(key: TokenStore.accessTokenKey)
         storedRefreshToken = keychainRead(key: TokenStore.refreshTokenKey)
         if let raw = keychainRead(key: TokenStore.expiryKey),
-           let ts = Double(raw) {
-            expiresAt = Date(timeIntervalSince1970: ts)
+           let interval = Double(raw) {
+            expiresAt = Date(timeIntervalSince1970: interval)
         }
     }
 
@@ -120,7 +120,7 @@ private func keychainRead(key: String) -> String? {
         kSecClass as String: kSecClassGenericPassword,
         kSecAttrAccount as String: key,
         kSecReturnData as String: true,
-        kSecMatchLimit as String: kSecMatchLimitOne,
+        kSecMatchLimit as String: kSecMatchLimitOne
     ]
     var result: AnyObject?
     let status = SecItemCopyMatching(query as CFDictionary, &result)
@@ -135,7 +135,7 @@ private func keychainWrite(key: String, value: String) {
     guard let data = value.data(using: .utf8) else { return }
     let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
-        kSecAttrAccount as String: key,
+        kSecAttrAccount as String: key
     ]
     let attrs: [String: Any] = [kSecValueData as String: data]
     let status = SecItemUpdate(query as CFDictionary, attrs as CFDictionary)
@@ -149,7 +149,7 @@ private func keychainWrite(key: String, value: String) {
 private func keychainDelete(key: String) {
     let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
-        kSecAttrAccount as String: key,
+        kSecAttrAccount as String: key
     ]
     SecItemDelete(query as CFDictionary)
 }

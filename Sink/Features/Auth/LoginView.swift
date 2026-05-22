@@ -143,7 +143,7 @@ extension AuthViewModel.State: Equatable {
     static func == (lhs: AuthViewModel.State, rhs: AuthViewModel.State) -> Bool {
         switch (lhs, rhs) {
         case (.idle, .idle), (.loading, .loading): return true
-        case (.error(let a), .error(let b)): return a == b
+        case (.error(let lhsMessage), .error(let rhsMessage)): return lhsMessage == rhsMessage
         default: return false
         }
     }

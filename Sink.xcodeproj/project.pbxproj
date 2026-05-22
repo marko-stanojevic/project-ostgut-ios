@@ -7,17 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B0920EAD2FBFB3120060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EAC2FBFB3120060419F /* SinkAPI */; };
 		B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */ = {isa = PBXBuildFile; productRef = B0920EA62FBFB3120060419F /* SinkPlayback */; };
+		B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */ = {isa = PBXBuildFile; productRef = B1920E0A2FBFB08A0060419F /* SinkAPI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B0920E622FBFB08A0060419F /* Sink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sink.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1920E012FBFB08A0060419F /* SinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1920E0C2FBFB08A0060419F /* Sink.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sink.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B0920E642FBFB08A0060419F /* Sink */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Sink;
+			sourceTree = "<group>";
+		};
+		B1920E022FBFB08A0060419F /* SinkTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SinkTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -27,7 +36,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0920EAD2FBFB3120060419F /* SinkAPI in Frameworks */,
 				B0920EA72FBFB3120060419F /* SinkPlayback in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1920E042FBFB08A0060419F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1920E0B2FBFB08A0060419F /* SinkAPI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +56,8 @@
 			isa = PBXGroup;
 			children = (
 				B0920E642FBFB08A0060419F /* Sink */,
+				B1920E022FBFB08A0060419F /* SinkTests */,
+				B1920E0C2FBFB08A0060419F /* Sink.xctestplan */,
 				B0920E632FBFB08A0060419F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				B0920E622FBFB08A0060419F /* Sink.app */,
+				B1920E012FBFB08A0060419F /* SinkTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,6 +74,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B1920E062FBFB08A0060419F /* SinkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1920E092FBFB08A0060419F /* Build configuration list for PBXNativeTarget "SinkTests" */;
+			buildPhases = (
+				B1920E032FBFB08A0060419F /* Sources */,
+				B1920E042FBFB08A0060419F /* Frameworks */,
+				B1920E052FBFB08A0060419F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B1920E022FBFB08A0060419F /* SinkTests */,
+			);
+			name = SinkTests;
+			packageProductDependencies = (
+				B1920E0A2FBFB08A0060419F /* SinkAPI */,
+			);
+			productName = SinkTests;
+			productReference = B1920E012FBFB08A0060419F /* SinkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B0920E612FBFB08A0060419F /* Sink */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B0920E6D2FBFB08C0060419F /* Build configuration list for PBXNativeTarget "Sink" */;
@@ -70,6 +114,7 @@
 			);
 			name = Sink;
 			packageProductDependencies = (
+				B0920EAC2FBFB3120060419F /* SinkAPI */,
 				B0920EA62FBFB3120060419F /* SinkPlayback */,
 			);
 			productName = Sink;
@@ -88,6 +133,10 @@
 				TargetAttributes = {
 					B0920E612FBFB08A0060419F = {
 						CreatedOnToolsVersion = 26.5;
+					};
+					B1920E062FBFB08A0060419F = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = B0920E612FBFB08A0060419F;
 					};
 				};
 			};
@@ -110,6 +159,7 @@
 			projectRoot = "";
 			targets = (
 				B0920E612FBFB08A0060419F /* Sink */,
+				B1920E062FBFB08A0060419F /* SinkTests */,
 			);
 		};
 /* End PBXProject section */
@@ -122,10 +172,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B1920E052FBFB08A0060419F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B0920E5E2FBFB08A0060419F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1920E032FBFB08A0060419F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -333,6 +397,49 @@
 			};
 			name = Release;
 		};
+		B1920E072FBFB08A0060419F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = WareHouseFinds.SinkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sink.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sink";
+			};
+			name = Debug;
+		};
+		B1920E082FBFB08A0060419F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = WareHouseFinds.SinkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sink.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sink";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -354,6 +461,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		B1920E092FBFB08A0060419F /* Build configuration list for PBXNativeTarget "SinkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1920E072FBFB08A0060419F /* Debug */,
+				B1920E082FBFB08A0060419F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -368,6 +484,14 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B0920EAC2FBFB3120060419F /* SinkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkAPI;
+		};
+		B1920E0A2FBFB08A0060419F /* SinkAPI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SinkAPI;
+		};
 		B0920EA62FBFB3120060419F /* SinkPlayback */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SinkPlayback;

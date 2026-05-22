@@ -5,6 +5,9 @@ import SwiftUI
 struct SinkApp: App {
     private let navigation: AppNavigation
     private let authViewModel: AuthViewModel
+    private let apiClient: APIClient
+    private let catalogViewModel: CatalogViewModel
+    private let searchViewModel: SearchViewModel
 
     init() {
         let serverURL = Self.resolveServerURL()
@@ -21,11 +24,22 @@ struct SinkApp: App {
             try await tokenStore.accessToken()
         }
 
+        let anonymousSessionStore = AnonymousSessionStore(apiClient: apiClient)
+
         self.navigation = navigation
+        self.apiClient = apiClient
         self.authViewModel = AuthViewModel(
             apiClient: apiClient,
             tokenStore: tokenStore,
             navigation: navigation
+        )
+        self.catalogViewModel = CatalogViewModel(
+            apiClient: apiClient,
+            anonymousSessionStore: anonymousSessionStore
+        )
+        self.searchViewModel = SearchViewModel(
+            apiClient: apiClient,
+            anonymousSessionStore: anonymousSessionStore
         )
 
         Task { await Self.restoreAuthState(tokenStore: tokenStore, navigation: navigation) }
@@ -36,6 +50,9 @@ struct SinkApp: App {
             RootView()
                 .environment(navigation)
                 .environment(authViewModel)
+                .environment(catalogViewModel)
+                .environment(searchViewModel)
+                .environment(\.apiClient, apiClient)
         }
     }
 
@@ -43,8 +60,10 @@ struct SinkApp: App {
 
     private static func resolveServerURL() -> URL {
         #if DEBUG
+        // swiftlint:disable:next force_unwrapping
         return URL(string: "http://localhost:8080")!
         #else
+        // swiftlint:disable:next force_unwrapping
         return URL(string: "https://api.sink.fm")!
         #endif
     }

@@ -3529,7 +3529,7 @@ paths:
       responses:
         "200":
           content:
-            application/json:
+            application/octet-stream:
               schema:
                 format: binary
                 type: string
